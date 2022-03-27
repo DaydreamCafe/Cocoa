@@ -1,0 +1,17 @@
+# 超级用户QQ
+SuperUsers: ['123456789']
+
+# 命令前缀
+CommandPrefix: "/"
+
+# 机器人别名
+NickNames: ["cocoa", "Cocoa", "心爱"]
+
+# go-cqhttp设置
+Server:
+  Address: "127.0.0.1"
+  Port: 6700
+  Token: ""
+
+# 调试模式
+DEBUG: false
