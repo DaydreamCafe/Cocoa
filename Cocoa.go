@@ -12,7 +12,8 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/driver"
 	yaml "gopkg.in/yaml.v2"
 
-	_ "github.com/DaydreamCafe/Cocoa/plugins/smartai"
+	// 加载插件
+	_ "github.com/DaydreamCafe/Cocoa/plugins/nickname"
 )
 
 // 配置文件结构体
@@ -23,7 +24,7 @@ type Config struct {
 	DEBUG         bool     `yaml:"DEBUG"`
 	Server        struct {
 		Address string `yaml:"Address"`
-		Port    int    `yaml:"Port"`
+		Port    int64    `yaml:"Port"`
 		Token   string `yaml:"Token"`
 	} `yaml:"Server"`
 }
@@ -55,7 +56,7 @@ func init() {
 }
 
 func main() {
-
+	// 初始化框架
 	zeroCondfig := zero.Config{
 		NickName:      config.NickNames,
 		CommandPrefix: config.CommandPrefix,
@@ -65,6 +66,7 @@ func main() {
 			config.Server.Token,
 		),
 		}}
+	// 运行插件
 	zero.Run(zeroCondfig)
 
 	// 捕获Ctrl C退出程序
@@ -82,5 +84,5 @@ func main() {
 }
 
 func cleanUp() {
-	// 先留着罢，以后需要的时候再写
+	// 先留着罢，以后需要的时候再写awa
 }
