@@ -17,6 +17,7 @@ func init() {
 				msg = strings.Replace(msg, "?", "!", -1);
 				msg = strings.Replace(msg, "？", "!", -1);
 				msg = strings.Replace(msg, "吗", "", -1);
+				msg = strings.Replace(msg, "我", "你", -1);
 				ctx.Send(msg)
 			}
 		})
