@@ -46,10 +46,12 @@ func init() {
 	// 初始化权限表
 	log.Debug("开始初始化权限表")
 	sqlStatement := `
-	CREATE TABLE IF NOT EXISTS permissions(
-		ID    SERIAL PRIMARY KEY,
-		UID   INT NOT NULL,
-		LEVEL INT NOT NULL
+	CREATE TABLE IF NOT EXISTS permissions
+	(
+    ID         SERIAL PRIMARY KEY,
+    UID        INT NOT NULL,
+    LEVEL      INT NOT NULL,
+    LAST_LEVEL INT NOT NULL
 	);`
 	_, err = db.Exec(sqlStatement)
 	if err != nil {
@@ -80,7 +82,7 @@ func AddPermission(QID int64, Level int64) error {
 
 	if !existence {
 		// 如果没有数据则添加权限
-		sqlStatement := fmt.Sprintf("INSERT INTO permissions (uid, level) VALUES (%d, %d);;", QID, Level)
+		sqlStatement := fmt.Sprintf("INSERT INTO permissions (uid, level, last_level) VALUES (%d, %d, %d);;", QID, Level, defaultPermissionLevel)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
@@ -104,10 +106,10 @@ func UpdatePermission(QID int64, Level int64) error {
 	defer db.Close()
 
 	// 查询用户权限配置是否已存在
-	var totolResult int
+	var currentLevel int
 	var existence bool
 	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE uid = %d;", QID)
-	err = db.QueryRow(sqlStatement).Scan(&totolResult)
+	err = db.QueryRow(sqlStatement).Scan(&currentLevel)
 	if err != nil {
 		existence = false
 	} else {
@@ -117,14 +119,14 @@ func UpdatePermission(QID int64, Level int64) error {
 	// 修改权限
 	if existence {
 		// 如果已存在则修改
-		sqlStatement := fmt.Sprintf("UPDATE permissions SET level = %d WHERE uid = %d;", Level, QID)
+		sqlStatement := fmt.Sprintf("UPDATE permissions SET level = %d, last_level = %d WHERE uid = %d;", Level, currentLevel, QID)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
 		}
 	} else {
 		// 若不存在则添加
-		sqlStatement := fmt.Sprintf("INSERT INTO permissions (uid, level) VALUES (%d, %d);;", QID, Level)
+		sqlStatement := fmt.Sprintf("INSERT INTO permissions (uid, level, last_level) VALUES (%d, %d, %d);;", QID, Level, defaultPermissionLevel)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
@@ -206,6 +208,43 @@ func QueryPermission(QID int64) (int64, error) {
 	}
 }
 
+func QueryLastPermission(QID int64) (int64, error) {
+	// 连接数据库
+	err := database.OpenDB()
+	if err != nil {
+		return 0, err
+	}
+
+	db := database.GetDB()
+	defer db.Close()
+
+	// 查询用户权限配置是否已存在
+	var totolResult int
+	var existence bool
+	sqlStatement := fmt.Sprintf("SELECT last_level FROM permissions WHERE uid = %d;", QID)
+	err = db.QueryRow(sqlStatement).Scan(&totolResult)
+	if err != nil {
+		existence = false
+	} else {
+		existence = true
+	}
+
+	// 查询权限
+	if existence {
+		// 如果存在则返回数据库中的权限等级配置值
+		var ret int64
+		sqlStatement := fmt.Sprintf("SELECT last_level FROM permissions WHERE uid = %d;", QID)
+		err := db.QueryRow(sqlStatement).Scan(&ret)
+		if err != nil {
+			return 0, err
+		}
+		return ret, nil
+	} else {
+		// 若不存在则返回默认值
+		return defaultPermissionLevel, nil
+	}
+}
+
 func CheckPermissions(QID int64, minLevel int64) (bool, error) {
 	userLevel, err := QueryPermission(QID)
 	if err != nil {
@@ -241,10 +280,12 @@ func RestAllLevel() error {
 
 	// 初始化权限表
 	sqlStatement := `
-	CREATE TABLE IF NOT EXISTS permissions(
-		ID    SERIAL PRIMARY KEY,
-		UID   INT NOT NULL,
-		LEVEL INT NOT NULL
+	CREATE TABLE IF NOT EXISTS permissions
+	(
+    ID         SERIAL PRIMARY KEY,
+    UID        INT NOT NULL,
+    LEVEL      INT NOT NULL,
+    LAST_LEVEL INT NOT NULL
 	);`
 	_, err = db.Exec(sqlStatement)
 	if err != nil {
@@ -255,7 +296,32 @@ func RestAllLevel() error {
 }
 
 func BanUser(QID int64) error {
-	return UpdatePermission(QID, -1)
+	isBaned, err := IsBaned(QID)
+	if err != nil {
+		return err
+	}
+	if isBaned {
+		return errors.New("User already baned!")
+	} else {
+		return UpdatePermission(QID, -1)
+	}
+
+}
+
+func UnbanUser(QID int64) error {
+	isBaned, err := IsBaned(QID)
+	if err != nil {
+		return err
+	}
+	last_level, err := QueryLastPermission(QID)
+	if err != nil {
+		return err
+	}
+	if isBaned {
+		return UpdatePermission(QID, last_level)
+	} else {
+		return errors.New("User not baned!")
+	}
 }
 
 func IsBaned(QID int64) (bool, error) {
