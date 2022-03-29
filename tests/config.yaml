@@ -21,8 +21,8 @@ Database:
   Address: "127.0.0.1"
   Port: 5432
   User: "postgres"
-  Password: "794613"
-  DatabaseName: "test"
+  Password: "060303"
+  DatabaseName: "cafe"
 
 # 调试模式
 DEBUG: false
