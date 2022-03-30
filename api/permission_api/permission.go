@@ -24,7 +24,6 @@ var defaultPermissionLevel int64
 
 func init() {
 	// 读取默认权限设置
-
 	configFile, err := ioutil.ReadFile("config.yaml")
 	if err != nil {
 		log.Error(err)
@@ -48,10 +47,10 @@ func init() {
 	sqlStatement := `
 	CREATE TABLE IF NOT EXISTS permissions
 	(
-    ID         SERIAL PRIMARY KEY,
-    UID        INT NOT NULL,
-    LEVEL      INT NOT NULL,
-    LAST_LEVEL INT NOT NULL
+		ID         SERIAL PRIMARY KEY,
+		QID        INT NOT NULL,
+		LEVEL      INT NOT NULL,
+		LAST_LEVEL INT NOT NULL
 	);`
 	_, err = db.Exec(sqlStatement)
 	if err != nil {
@@ -70,19 +69,19 @@ func AddPermission(QID int64, Level int64) error {
 	defer db.Close()
 
 	// 查询用户权限配置是否已存在
-	var totolResult int
-	var existence bool
-	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE uid = %d;", QID)
-	err = db.QueryRow(sqlStatement).Scan(&totolResult)
+	var queryResult int
+	var IfExist bool
+	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE qid = %d;", QID)
+	err = db.QueryRow(sqlStatement).Scan(&queryResult)
 	if err != nil {
-		existence = false
+		IfExist = false
 	} else {
-		existence = true
+		IfExist = true
 	}
 
-	if !existence {
+	if !IfExist {
 		// 如果没有数据则添加权限
-		sqlStatement := fmt.Sprintf("INSERT INTO permissions (uid, level, last_level) VALUES (%d, %d, %d);;", QID, Level, defaultPermissionLevel)
+		sqlStatement := fmt.Sprintf("INSERT INTO permissions (qid, level, last_level) VALUES (%d, %d, %d);;", QID, Level, defaultPermissionLevel)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
@@ -107,26 +106,26 @@ func UpdatePermission(QID int64, Level int64) error {
 
 	// 查询用户权限配置是否已存在
 	var currentLevel int
-	var existence bool
-	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE uid = %d;", QID)
+	var IfExist bool
+	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE qid = %d;", QID)
 	err = db.QueryRow(sqlStatement).Scan(&currentLevel)
 	if err != nil {
-		existence = false
+		IfExist = false
 	} else {
-		existence = true
+		IfExist = true
 	}
 
 	// 修改权限
-	if existence {
+	if IfExist {
 		// 如果已存在则修改
-		sqlStatement := fmt.Sprintf("UPDATE permissions SET level = %d, last_level = %d WHERE uid = %d;", Level, currentLevel, QID)
+		sqlStatement := fmt.Sprintf("UPDATE permissions SET level = %d, last_level = %d WHERE qid = %d;", Level, currentLevel, QID)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
 		}
 	} else {
 		// 若不存在则添加
-		sqlStatement := fmt.Sprintf("INSERT INTO permissions (uid, level, last_level) VALUES (%d, %d, %d);;", QID, Level, defaultPermissionLevel)
+		sqlStatement := fmt.Sprintf("INSERT INTO permissions (qid, level, last_level) VALUES (%d, %d, %d);;", QID, Level, defaultPermissionLevel)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
@@ -146,20 +145,20 @@ func RemovePermission(QID int64) error {
 	defer db.Close()
 
 	// 查询用户权限配置是否已存在
-	var totolResult int
-	var existence bool
-	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE uid = %d;", QID)
-	err = db.QueryRow(sqlStatement).Scan(&totolResult)
+	var queryResult int
+	var IfExist bool
+	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE qid = %d;", QID)
+	err = db.QueryRow(sqlStatement).Scan(&queryResult)
 	if err != nil {
-		existence = false
+		IfExist = false
 	} else {
-		existence = true
+		IfExist = true
 	}
 
 	// 删除用户权限配置
-	if existence {
+	if IfExist {
 		// 如果已存在则修改
-		sqlStatement := fmt.Sprintf("DELETE FROM permissions WHERE uid = %d;", QID)
+		sqlStatement := fmt.Sprintf("DELETE FROM permissions WHERE qid = %d;", QID)
 		_, err = db.Exec(sqlStatement)
 		if err != nil {
 			return err
@@ -182,21 +181,21 @@ func QueryPermission(QID int64) (int64, error) {
 	defer db.Close()
 
 	// 查询用户权限配置是否已存在
-	var totolResult int
-	var existence bool
-	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE uid = %d;", QID)
-	err = db.QueryRow(sqlStatement).Scan(&totolResult)
+	var queryResult int
+	var IfExist bool
+	sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE qid = %d;", QID)
+	err = db.QueryRow(sqlStatement).Scan(&queryResult)
 	if err != nil {
-		existence = false
+		IfExist = false
 	} else {
-		existence = true
+		IfExist = true
 	}
 
 	// 查询权限
-	if existence {
+	if IfExist {
 		// 如果存在则返回数据库中的权限等级配置值
 		var ret int64
-		sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE uid = %d;", QID)
+		sqlStatement := fmt.Sprintf("SELECT level FROM permissions WHERE qid = %d;", QID)
 		err := db.QueryRow(sqlStatement).Scan(&ret)
 		if err != nil {
 			return 0, err
@@ -219,21 +218,21 @@ func QueryLastPermission(QID int64) (int64, error) {
 	defer db.Close()
 
 	// 查询用户权限配置是否已存在
-	var totolResult int
-	var existence bool
-	sqlStatement := fmt.Sprintf("SELECT last_level FROM permissions WHERE uid = %d;", QID)
-	err = db.QueryRow(sqlStatement).Scan(&totolResult)
+	var queryResult int
+	var IfExist bool
+	sqlStatement := fmt.Sprintf("SELECT last_level FROM permissions WHERE qid = %d;", QID)
+	err = db.QueryRow(sqlStatement).Scan(&queryResult)
 	if err != nil {
-		existence = false
+		IfExist = false
 	} else {
-		existence = true
+		IfExist = true
 	}
 
 	// 查询权限
-	if existence {
+	if IfExist {
 		// 如果存在则返回数据库中的权限等级配置值
 		var ret int64
-		sqlStatement := fmt.Sprintf("SELECT last_level FROM permissions WHERE uid = %d;", QID)
+		sqlStatement := fmt.Sprintf("SELECT last_level FROM permissions WHERE qid = %d;", QID)
 		err := db.QueryRow(sqlStatement).Scan(&ret)
 		if err != nil {
 			return 0, err
@@ -273,7 +272,7 @@ func RestAllLevel() error {
 	defer db.Close()
 
 	// 删除表
-	_, err = db.Exec("drop table permissions;")
+	_, err = db.Exec("DROP TABLE IF EXISTS permissions;")
 	if err != nil {
 		return err
 	}
@@ -282,10 +281,10 @@ func RestAllLevel() error {
 	sqlStatement := `
 	CREATE TABLE IF NOT EXISTS permissions
 	(
-    ID         SERIAL PRIMARY KEY,
-    UID        INT NOT NULL,
-    LEVEL      INT NOT NULL,
-    LAST_LEVEL INT NOT NULL
+		ID         SERIAL PRIMARY KEY,
+		QID        INT NOT NULL,
+		LEVEL      INT NOT NULL,
+		LAST_LEVEL INT NOT NULL
 	);`
 	_, err = db.Exec(sqlStatement)
 	if err != nil {
