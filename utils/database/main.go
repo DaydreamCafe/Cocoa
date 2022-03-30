@@ -35,7 +35,7 @@ type Config struct {
    CA and the server host name matches the one in the certificate)
  * See more in https://pkg.go.dev/github.com/lib/pq@v1.10.4#section-readme
 */
-const dbSSLMode = "disable"
+const DB_SSL_MODE = "disable"
 
 var config Config
 var db *sql.DB
@@ -61,7 +61,7 @@ func init() {
 		databaseConfig.Address,
 		databaseConfig.Port,
 		databaseConfig.DatabaseName,
-		dbSSLMode,
+		DB_SSL_MODE,
 	)
 
 }
