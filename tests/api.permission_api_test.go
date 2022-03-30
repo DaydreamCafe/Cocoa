@@ -6,6 +6,10 @@ import (
 	"github.com/DaydreamCafe/Cocoa/api/permission_api"
 )
 
+func init() {
+	permission_api.RestAllLevel()
+}
+
 func TestResetAllPermission(t *testing.T) {
 	err := permission_api.AddPermission(114514, 1919810)
 	if err != nil {
