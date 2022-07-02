@@ -1,0 +1,28 @@
+# 超级用户QQ
+SuperUsers: [1423634265]
+
+# 命令前缀
+CommandPrefix: "/"
+
+# 机器人别名
+NickNames: ["cocoa", "Cocoa", "心爱"]
+
+# 默认权限设置
+DefaultLevel: 5
+
+# go-cqhttp设置
+Server:
+  Address: "127.0.0.1"
+  Port: 6700
+  Token: ""
+
+# 数据库设置
+Database:
+  Address: "127.0.0.1"
+  Port: 5432
+  User: "postgres"
+  Password: "060303"
+  DatabaseName: "cocoa"
+
+# 调试模式
+DEBUG: false
