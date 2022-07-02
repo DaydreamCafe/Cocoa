@@ -6,6 +6,8 @@ build:
 	@echo Building...
 	go build ${ProjectName}.go
 	@mv ${ProjectName} ./build/${ProjectName}
+	@cp config.yaml ./build/config.yaml
+	@echo Done.
 
 clean:
 	@if [ -d "./build" ];then echo Cleaning last build...; rm -rf ./build; echo Finished!; else echo No build, passing...; fi
