@@ -1,16 +1,21 @@
 package main
 
 import (
+	// Internal Libs
 	"fmt"
 	"os"
 	"os/signal"
 
+	// External Libs
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/driver"
 
-	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bili_info_disp"
+	// Custom Libs
 	"github.com/DaydreamCafe/Cocoa/V2/src/config"
 	_ "github.com/DaydreamCafe/Cocoa/V2/src/logger"
+
+	// Plugins Libs
+	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bili_info_disp"
 )
 
 var Config config.CONFIG
