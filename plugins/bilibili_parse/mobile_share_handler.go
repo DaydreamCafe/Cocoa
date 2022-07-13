@@ -1,7 +1,10 @@
 /*
-移动端分享相关
+@Title        mobile_share_handler.go
+@Description  移动端分享信息处理
+@Author       WhitePaper233 2020.7.13
+@Update       WhitePaper233 2020.7.13
 */
-package bili_info_disp
+package bilibili_parse
 
 import (
 	"encoding/json"
@@ -10,9 +13,36 @@ import (
 	"strings"
 
 	logger "github.com/sirupsen/logrus"
-
-	_ "github.com/DaydreamCafe/Cocoa/V2/src/logger"
+	zero "github.com/wdvxdr1123/ZeroBot"
 )
+
+func HandleMobileShare(ctx *zero.Ctx) {
+	var appInfo MiniAppInfo
+	// 判断是否是移动端分享信息
+	if appInfo.IsBilibiliShare(ctx.Event.RawMessage) {
+		logger.Debugln("匹配移动端分享信息成功,MessageId:", ctx.Event.MessageID)
+
+		// 获取重定向链接
+		redictedLink, err := appInfo.GetRedictLink()
+		if err != nil {
+			logger.Errorln("获取视频链接失败:", err)
+			return
+		}
+
+		// 匹配结果
+		results := CompiledVIDRegex.FindStringSubmatch(redictedLink)
+		vid := results[0]
+		logger.Debugln("获取视频ID成功:", vid)
+
+		// 获取视频信息
+		videoInfo, err := GetVideoInfo(vid)
+		if err != nil {
+			logger.Errorln("获取视频信息失败:", err)
+			return
+		}
+		videoInfo.Send(ctx)
+	}
+}
 
 type MiniAppInfo struct {
 	App   string `json:"app"`
@@ -55,10 +85,6 @@ func (appInfo *MiniAppInfo) GetRedictLink() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	var redictedLink string
-
-	// 设置请求头
-	request.Header.Set("User-Agent", "Mozilla/5.0 (iPhone; CPU iPhone OS 11_0 like Mac OS X) AppleWebKit/604.1.38 (KHTML, like Gecko) Version/11.0 Mobile/15A372 Safari/604.1")
 
 	//构造一个禁止重定向的client
 	client := &http.Client{
@@ -82,9 +108,11 @@ func (appInfo *MiniAppInfo) GetRedictLink() (string, error) {
 	if err != nil {
 		return "", err
 	}
-	logger.Debugln("捕捉到视频:", string(body))
+
 	// 抽取重定向链接
 	redictPage := string(body)
+	
+	var redictedLink string
 	redictedLink = strings.TrimPrefix(redictPage, "<a href=\"")
 	redictedLink = strings.TrimSuffix(redictedLink, "\">Found</a>.")
 

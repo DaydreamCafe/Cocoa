@@ -1,7 +1,10 @@
 /*
-从B站视频信息API相关
+@Title        info_grabber.go
+@Description  调用B站API获取视频信息
+@Author       WhitePaper233 2022.7.2
+@Update       WhitePaper233 2020.7.13 
 */
-package bili_info_disp
+package bilibili_parse
 
 import (
 	"encoding/json"
@@ -11,8 +14,6 @@ import (
 	"strings"
 
 	logger "github.com/sirupsen/logrus"
-
-	_ "github.com/DaydreamCafe/Cocoa/V2/src/logger"
 )
 
 const API = "http://api.bilibili.com/x/web-interface/view"
@@ -41,16 +42,18 @@ type APIStruct struct {
 	} `json:"data"`
 }
 
+// 获取视频信息
 func GetVideoInfo(vid string) (VideoInfo, error) {
 	// 获取视频信息
 	APIInfo, err := GetVideoInfoByAPI(vid)
-	logger.Debugln("捕捉到视频ID:", vid)
+	logger.Debugln("正在获取视频信息:", vid)
 	if err != nil {
 		return VideoInfo{}, err
 	}
 	if APIInfo.Code != 0 {
 		return VideoInfo{}, errors.New(APIInfo.Message)
 	}
+	logger.Debugln("获取视频信息成功:", vid)
 
 	var videoInfo VideoInfo
 	videoInfo.Title = APIInfo.Data.Title
@@ -63,6 +66,7 @@ func GetVideoInfo(vid string) (VideoInfo, error) {
 	videoInfo.Share = APIInfo.Data.Stat.Share
 	videoInfo.Desc = APIInfo.Data.Desc
 	videoInfo.URL = fmt.Sprintf("https://www.bilibili.com/video/%s", APIInfo.Data.Bvid)
+	videoInfo.BVID = APIInfo.Data.Bvid
 
 	// 返回视频信息
 	return videoInfo, nil
