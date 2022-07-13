@@ -1,21 +1,21 @@
 package main
 
 import (
-	// Internal Libs
+	// internal packages
 	"fmt"
 	"os"
 	"os/signal"
 
-	// External Libs
+	// external packages
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/driver"
 
-	// Custom Libs
+	// custom packages
 	"github.com/DaydreamCafe/Cocoa/V2/src/config"
 	_ "github.com/DaydreamCafe/Cocoa/V2/src/logger"
 
-	// Plugins Libs
-	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bili_info_disp"
+	// plugin packages
+	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bilibili_parse"
 )
 
 var Config config.CONFIG
@@ -24,7 +24,7 @@ var zeroConfig zero.Config
 // 初始化函数
 func init() {
 	// 加载配置文件
-	Config = Config.LoadConfig()
+	Config = Config.Load()
 
 	// 初始化ZeroBot配置
 	zeroConfig = zero.Config{
