@@ -40,7 +40,7 @@ LoadConfig 加载配置文件
 
 return: CONFIG对象
  */
-func (config CONFIG) LoadConfig() CONFIG {
+func (config CONFIG) Load() CONFIG {
 	configFile, err := io.ReadConfig()
 	if err != nil {
 		logger.Panic(err)
