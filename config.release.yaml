@@ -25,4 +25,4 @@ Database:
   DatabaseName: "cocoa"
 
 # 调试模式
-DEBUG: true
+DEBUG: false

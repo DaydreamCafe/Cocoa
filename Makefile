@@ -6,7 +6,7 @@ build:
 	@echo Building...
 	go build ${ProjectName}.go
 	@mv ${ProjectName} ./build/${ProjectName}
-	@cp config.yaml ./build/config.yaml
+	@cp config.release.yaml ./build/config.yaml
 	@echo Done.
 
 clean:
