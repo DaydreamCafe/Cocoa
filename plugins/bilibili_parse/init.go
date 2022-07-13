@@ -2,7 +2,7 @@
 @Title        init.go
 @Description  bilibili_parse 插件注册
 @Author       WhitePaper233 2022.7.2
-@Update       WhitePaper233 2020.7.13 
+@Update       WhitePaper233 2022.7.13 
 */
 package bilibili_parse
 

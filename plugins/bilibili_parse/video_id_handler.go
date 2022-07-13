@@ -1,8 +1,8 @@
 /*
 @Title        video_id_handler.go
 @Description  番号、长链接分享处理
-@Author       WhitePaper233 2020.7.13
-@Update       WhitePaper233 2020.7.13
+@Author       WhitePaper233 2022.7.13
+@Update       WhitePaper233 2022.7.13
 */
 package bilibili_parse
 

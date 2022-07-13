@@ -2,7 +2,7 @@
 @Title        info_grabber.go
 @Description  调用B站API获取视频信息
 @Author       WhitePaper233 2022.7.2
-@Update       WhitePaper233 2020.7.13 
+@Update       WhitePaper233 2022.7.13 
 */
 package bilibili_parse
 
