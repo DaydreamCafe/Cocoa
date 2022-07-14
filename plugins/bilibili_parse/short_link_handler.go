@@ -17,7 +17,6 @@ import (
 
 func HandleShortLink(ctx *zero.Ctx) {
 	// 如果是卡片信息, 则跳过
-	logger.Debugln(ctx.Event.RawMessage)
 	if strings.HasPrefix(
 		ctx.Event.RawMessage,
 		`[CQ:json,data={"app":"com.tencent.miniapp_01"&#44;`,
