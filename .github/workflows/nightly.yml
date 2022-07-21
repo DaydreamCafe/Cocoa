@@ -1,6 +1,6 @@
 name: nightly_build
 
-on: [push, pull_request]
+on: [pull_request]
 
 env:
   BINARY_PREFIX: "ddc_"
