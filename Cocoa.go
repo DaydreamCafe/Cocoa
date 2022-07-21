@@ -12,19 +12,29 @@ import (
 
 	// custom packages
 	"github.com/DaydreamCafe/Cocoa/V2/src/config"
-	_ "github.com/DaydreamCafe/Cocoa/V2/src/logger"
+	_ "github.com/DaydreamCafe/Cocoa/V2/src/init"
 
-	// plugin packages
+	// bultin plugin packages
+	_ "github.com/DaydreamCafe/Cocoa/V2/builtin/help"
+
+	// external plugin packages
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bilibili_parse"
+	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/char_reverser"
+	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/coser"
 )
 
-var Config config.CONFIG
-var zeroConfig zero.Config
+var (
+	// Config 全局配置
+	Config config.Config
+
+	// zeroConfig ZeroBot配置
+	zeroConfig zero.Config
+)
 
 // 初始化函数
 func init() {
 	// 加载配置文件
-	Config = Config.Load()
+	Config.Load()
 
 	// 初始化ZeroBot配置
 	zeroConfig = zero.Config{
