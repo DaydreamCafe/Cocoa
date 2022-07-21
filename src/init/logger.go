@@ -1,7 +1,5 @@
-/*
-初始化logrus，直接匿名导入即可
-*/
-package logger
+// Package init Bot初始化相关代码
+package init
 
 import (
 	logger "github.com/sirupsen/logrus"
@@ -11,8 +9,10 @@ import (
 	"github.com/DaydreamCafe/Cocoa/V2/src/io"
 )
 
-// CONFIG结构体, 用于储存配置文件中的DEBUG选项
-// 因为logger初始化需在全部读取配置文件之前，所以写了一个简化的配置文件读取操作
+/*
+CONFIG CONFIG结构体, 用于储存配置文件中的DEBUG选项
+因为logger初始化需在全部读取配置文件之前, 所以写了一个简化的配置文件读取操作
+*/
 type CONFIG struct {
 	DEBUG bool `yaml:"DEBUG"`
 }

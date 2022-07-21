@@ -1,6 +1,4 @@
-/*
-配置文件相关
- */
+// Package config 配置文件操作
 package config
 
 import (
@@ -8,11 +6,10 @@ import (
 	"gopkg.in/yaml.v3"
 
 	"github.com/DaydreamCafe/Cocoa/V2/src/io"
-	_ "github.com/DaydreamCafe/Cocoa/V2/src/logger"
 )
 
-// CONFIG类, 用于读取和操作配置文件
-type CONFIG struct {
+// Config Config类, 用于读取和操作配置文件
+type Config struct {
 	SuperUsers    []int64  `yaml:"SuperUsers"`
 	CommandPrefix string   `yaml:"CommandPrefix"`
 	NickNames     []string `yaml:"NickNames"`
@@ -35,23 +32,17 @@ type CONFIG struct {
 	DEBUG bool `yaml:"DEBUG"`
 }
 
-/* 
-LoadConfig 加载配置文件
-
-return: CONFIG对象
- */
-func (config CONFIG) Load() CONFIG {
+// Load 加载配置文件
+func (cfg *Config) Load() {
 	configFile, err := io.ReadConfig()
 	if err != nil {
 		logger.Panic(err)
 		panic(err)
 	}
 
-	err = yaml.Unmarshal(configFile, &config)
+	err = yaml.Unmarshal(configFile, &cfg)
 	if err != nil {
 		logger.Panic(err)
 		panic(err)
 	}
-
-	return config
 }

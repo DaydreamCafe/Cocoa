@@ -1,6 +1,4 @@
-/*
-常用io相关函数库
- */
+// Package io 常用io相关函数库
 package io
 
 import "io/ioutil"
