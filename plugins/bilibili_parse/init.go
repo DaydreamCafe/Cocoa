@@ -1,57 +1,50 @@
-/*
-@Title        init.go
-@Description  bilibili_parse 插件注册
-@Author       WhitePaper233 2022.7.2
-@Update       WhitePaper233 2022.7.13 
-*/
-package bilibili_parse
+// Package bilibiliparse B站分享解析
+package bilibiliparse
 
 import (
 	"regexp"
 
 	zero "github.com/wdvxdr1123/ZeroBot"
 
-	"github.com/DaydreamCafe/Cocoa/V2/utils/plugin"
+	"github.com/DaydreamCafe/Cocoa/V2/utils/control"
 )
 
 const (
-	// 番号正则表达式
-	VID_REGEX = `((av|AV)\d+|(bv|BV)1(\d|\w){2}4(\d|\w)1(\d|\w)7(\d|\w){2})`
-	// 短链接正则表达式
-	SHORT_LINK_REGEX = `(https:\/\/)?b23.tv\/\S{7}`
+	// VIDRegex 番号正则表达式
+	VIDRegex = `((av|AV)\d+|(bv|BV)1(\d|\w){2}4(\d|\w)1(\d|\w)7(\d|\w){2})`
+	// ShortLinkRegex 短链接正则表达式
+	ShortLinkRegex = `(https:\/\/)?b23.tv\/\S{7}`
 )
 
 var (
-	// 插件元数据
-	Metadata plugin.Metadata
-
-	// 编译后的番号正则表达式
+	// CompiledVIDRegex 编译后的番号正则表达式
 	CompiledVIDRegex *regexp.Regexp
-	// 编译后的短链接正则表达式
+	// CompiledShortLinkRegex 编译后的短链接正则表达式
 	CompiledShortLinkRegex *regexp.Regexp
 )
 
 func init() {
 	// 设置插件信息
-	Metadata := plugin.Metadata{
+	Metadata := control.Metadata{
 		Name:        "bilibili_parse",
 		Version:     "1.0.0",
-		Description: "bilibili视频解析插件",
-		Author: 	"WhitePaper233",
+		Description: "Bilibili视频解析插件",
+		Author:      "WhitePaper233",
+		Usage:       "发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息",
 	}
 	// 初始化插件
-	plugin.Initialization(Metadata)
+	control.Registe(&Metadata)
 
 	// 编译正则表达式
-	CompiledVIDRegex = regexp.MustCompile(VID_REGEX)
-	CompiledShortLinkRegex = regexp.MustCompile(SHORT_LINK_REGEX)
+	CompiledVIDRegex = regexp.MustCompile(VIDRegex)
+	CompiledShortLinkRegex = regexp.MustCompile(ShortLinkRegex)
 
 	// 处理av号或者BV号
-	zero.OnRegex(VID_REGEX).Handle(HandleVideoID)
+	zero.OnRegex(VIDRegex, zero.OnlyGroup).Handle(HandleVideoID)
 
 	// 匹配移动端卡片分享信息
-	zero.OnMessage().Handle(HandleMobileShare)
+	zero.OnMessage(zero.OnlyGroup).Handle(HandleMobileShare)
 
 	// 匹配短链接
-	zero.OnRegex(SHORT_LINK_REGEX).Handle(HandleShortLink)
+	zero.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(HandleShortLink)
 }

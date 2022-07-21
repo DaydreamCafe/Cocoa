@@ -1,10 +1,5 @@
-/*
-@Title        message_formatter.go
-@Description  消息格式化
-@Author       WhitePaper233 2022.7.2
-@Update       WhitePaper233 2022.7.13
-*/
-package bilibili_parse
+// Package bilibiliparse B站分享解析
+package bilibiliparse
 
 import (
 	"fmt"
@@ -14,7 +9,7 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
-// 视频信息结构体
+// VideoInfo 视频信息结构体
 type VideoInfo struct {
 	Title    string
 	CoverURL string
@@ -29,6 +24,7 @@ type VideoInfo struct {
 	BVID     string
 }
 
+// Send 发送视频信息
 func (videoInfo VideoInfo) Send(ctx *zero.Ctx) {
 	ctx.SendChain(
 		message.Image(videoInfo.CoverURL),

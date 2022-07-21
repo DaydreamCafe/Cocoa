@@ -1,10 +1,5 @@
-/*
-@Title        info_grabber.go
-@Description  调用B站API获取视频信息
-@Author       WhitePaper233 2022.7.2
-@Update       WhitePaper233 2022.7.13 
-*/
-package bilibili_parse
+// Package bilibiliparse B站分享解析
+package bilibiliparse
 
 import (
 	"encoding/json"
@@ -16,13 +11,14 @@ import (
 	logger "github.com/sirupsen/logrus"
 )
 
+// API B站视频信息API
 const API = "http://api.bilibili.com/x/web-interface/view"
 
-// API结构体
+// APIStruct B站API结构体
 type APIStruct struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
-	Ttl     int    `json:"ttl"`
+	TTL     int    `json:"ttl"`
 	Data    struct {
 		Bvid     string `json:"bvid"`
 		Avid     int    `json:"aid"`
@@ -42,7 +38,7 @@ type APIStruct struct {
 	} `json:"data"`
 }
 
-// 获取视频信息
+// GetVideoInfo 获取视频信息
 func GetVideoInfo(vid string) (VideoInfo, error) {
 	// 获取视频信息
 	APIInfo, err := GetVideoInfoByAPI(vid)
@@ -72,6 +68,7 @@ func GetVideoInfo(vid string) (VideoInfo, error) {
 	return videoInfo, nil
 }
 
+// GetVideoInfoByAPI 通过API获取视频信息
 func GetVideoInfoByAPI(vid string) (APIStruct, error) {
 	if strings.HasPrefix(vid, "av") || strings.HasPrefix(vid, "AV") {
 		videoInfo, err := GetVideoInfoByAVID(strings.TrimPrefix(vid, "av"))
@@ -80,11 +77,11 @@ func GetVideoInfoByAPI(vid string) (APIStruct, error) {
 		videoInfo, err := GetVideoInfoByBVID(vid)
 		return videoInfo, err
 	} else {
-		return APIStruct{}, errors.New("Invalid video ID")
+		return APIStruct{}, errors.New("invalid video id")
 	}
 }
 
-// 通过av号获取视频信息
+// GetVideoInfoByAVID 通过av号获取视频信息
 func GetVideoInfoByAVID(avid string) (APIStruct, error) {
 	var api APIStruct
 	// 获取视频信息
@@ -105,7 +102,7 @@ func GetVideoInfoByAVID(avid string) (APIStruct, error) {
 	return api, nil
 }
 
-// 通过BV号获取视频信息
+// GetVideoInfoByBVID 通过BV号获取视频信息
 func GetVideoInfoByBVID(bvid string) (APIStruct, error) {
 	var api APIStruct
 	// 获取视频信息
