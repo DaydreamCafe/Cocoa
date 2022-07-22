@@ -33,8 +33,8 @@ type coserAPIResp struct {
 	} `json:"data"`
 }
 
-// HandleCoser coser命令handler
-func HandleCoser(ctx *zero.Ctx) {
+// handleCoser coser命令handler
+func handleCoser(ctx *zero.Ctx) {
 	// 从API获取图片地址
 	request, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {

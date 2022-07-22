@@ -9,17 +9,16 @@ import (
 
 func init() {
 	// 设置插件信息
-	Metadata := control.Metadata{
+	metadata := control.Metadata{
 		Name:        "coser",
 		Version:     "1.0.0",
 		Description: "三次元小姐姐",
 		Author:      "WhitePaper233",
-		Usage: `Coser插件
-		coser  得到一张coser的图片`,
+		Usage:       "Coser插件\n-coser  得到一张coser的图片",
 	}
 	// 初始化插件
-	control.Registe(&Metadata)
+	control.Registe(&metadata)
 
 	// 处理coser命令
-	zero.OnFullMatch("coser", zero.OnlyGroup).SetBlock(true).Handle(HandleCoser)
+	zero.OnFullMatch("coser", zero.OnlyGroup).SetBlock(true).Handle(handleCoser)
 }

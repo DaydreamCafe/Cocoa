@@ -38,10 +38,10 @@ type APIStruct struct {
 	} `json:"data"`
 }
 
-// GetVideoInfo 获取视频信息
-func GetVideoInfo(vid string) (VideoInfo, error) {
+// getVideoInfo 获取视频信息
+func getVideoInfo(vid string) (VideoInfo, error) {
 	// 获取视频信息
-	APIInfo, err := GetVideoInfoByAPI(vid)
+	APIInfo, err := getVideoInfoByAPI(vid)
 	logger.Debugln("正在获取视频信息:", vid)
 	if err != nil {
 		return VideoInfo{}, err
@@ -68,21 +68,21 @@ func GetVideoInfo(vid string) (VideoInfo, error) {
 	return videoInfo, nil
 }
 
-// GetVideoInfoByAPI 通过API获取视频信息
-func GetVideoInfoByAPI(vid string) (APIStruct, error) {
+// getVideoInfoByAPI 通过API获取视频信息
+func getVideoInfoByAPI(vid string) (APIStruct, error) {
 	if strings.HasPrefix(vid, "av") || strings.HasPrefix(vid, "AV") {
-		videoInfo, err := GetVideoInfoByAVID(strings.TrimPrefix(vid, "av"))
+		videoInfo, err := getVideoInfoByAVID(strings.TrimPrefix(vid, "av"))
 		return videoInfo, err
 	} else if strings.HasPrefix(vid, "bv") || strings.HasPrefix(vid, "BV") {
-		videoInfo, err := GetVideoInfoByBVID(vid)
+		videoInfo, err := getVideoInfoByBVID(vid)
 		return videoInfo, err
 	} else {
 		return APIStruct{}, errors.New("invalid video id")
 	}
 }
 
-// GetVideoInfoByAVID 通过av号获取视频信息
-func GetVideoInfoByAVID(avid string) (APIStruct, error) {
+// getVideoInfoByAVID 通过av号获取视频信息
+func getVideoInfoByAVID(avid string) (APIStruct, error) {
 	var api APIStruct
 	// 获取视频信息
 	request, err := http.NewRequest("GET", API+"?aid="+avid, nil)
@@ -102,8 +102,8 @@ func GetVideoInfoByAVID(avid string) (APIStruct, error) {
 	return api, nil
 }
 
-// GetVideoInfoByBVID 通过BV号获取视频信息
-func GetVideoInfoByBVID(bvid string) (APIStruct, error) {
+// getVideoInfoByBVID 通过BV号获取视频信息
+func getVideoInfoByBVID(bvid string) (APIStruct, error) {
 	var api APIStruct
 	// 获取视频信息
 	request, err := http.NewRequest("GET", API+"?bvid="+bvid, nil)
