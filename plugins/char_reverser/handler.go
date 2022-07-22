@@ -3,9 +3,10 @@ package charreverser
 
 import (
 	"regexp"
+	"strings"
 
-	logger "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
+	"github.com/wdvxdr1123/ZeroBot/message"
 )
 
 // commandRegex 命令正则表达式
@@ -65,40 +66,32 @@ var (
 		'X': 'X',
 		'Y': '⅄',
 		'Z': 'Z',
+		' ': ' ',
 	}
 
-	compiledRegex *regexp.Regexp
+	// compiledRegex 编译后的正则表达式
+	compiledRegex *regexp.Regexp = regexp.MustCompile(commandRegex)
 )
 
-func init() {
-	// 编译正则表达式
-	compiledRegex = regexp.MustCompile(commandRegex)
-}
-
-// HandleReverse 翻转命令handler
-func HandleReverse(ctx *zero.Ctx) {
+// handleReverse 翻转命令handler
+func handleReverse(ctx *zero.Ctx) {
 	// 获取需要翻转的字符串
 	results := compiledRegex.FindAllString(ctx.MessageString(), -1)
 
 	str := results[0]
-	logger.Debugln(str)
 
 	// 将字符顺序翻转
-	var tempStr string
+	var tempStrBuilder strings.Builder
 	for i := len(str) - 1; i >= 0; i-- {
-		tempStr += string(str[i])
+		tempStrBuilder.WriteByte(str[i])
 	}
 
 	// 翻转字符字形
-	var reversedStr string
-	for _, char := range tempStr {
-		if char != ' ' {
-			reversedStr += string(charMap[char])
-		} else {
-			reversedStr += string(char)
-		}
+	var reversedStrBuilder strings.Builder
+	for _, char := range tempStrBuilder.String() {
+		reversedStrBuilder.WriteRune(charMap[char])
 	}
 
 	// 发送翻转后的字符串
-	ctx.Send(reversedStr)
+	ctx.SendChain(message.Text(reversedStrBuilder.String()))
 }
