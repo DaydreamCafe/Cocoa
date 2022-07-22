@@ -15,12 +15,12 @@ func init() {
 		Description: "二次元萝莉",
 		Author:      "jiangnan777312",
 		Usage: `Lolicon插件
-		get_loli  得到一张loli的图片`,
+		涩图|色图  得到一张loli的图片`,
 	}
 	// 初始化插件
 	control.Registe(&Metadata)
 
-	// 处理get_loli命令
+	// 处理涩图命令
 	commandGroup := []string{
 		"涩图",
 		"色图",
