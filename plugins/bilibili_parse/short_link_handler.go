@@ -10,8 +10,8 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 )
 
-// HandleShortLink 短链接handler
-func HandleShortLink(ctx *zero.Ctx) {
+// handleShortLink 短链接handler
+func handleShortLink(ctx *zero.Ctx) {
 	// 如果是卡片信息, 则跳过
 	if strings.HasPrefix(
 		ctx.Event.RawMessage,
@@ -22,7 +22,7 @@ func HandleShortLink(ctx *zero.Ctx) {
 
 	logger.Debugln("匹配短链分享信息成功,MessageId:", ctx.Event.MessageID)
 	// 匹配结果
-	results := CompiledShortLinkRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
+	results := compiledShortLinkRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
 
 	// 构造请求链接
 	var shortLinks = make([]string, len(results))
@@ -77,7 +77,7 @@ func HandleShortLink(ctx *zero.Ctx) {
 	var videoIDs = make([]string, len(fullLinks))
 
 	for index, fullLink := range fullLinks {
-		results := CompiledVIDRegex.FindStringSubmatch(fullLink)
+		results := compiledVIDRegex.FindStringSubmatch(fullLink)
 		if len(results) == 0 {
 			continue
 		}
@@ -95,7 +95,7 @@ func HandleShortLink(ctx *zero.Ctx) {
 			continue
 		}
 
-		videoInfo, err := GetVideoInfo(vid)
+		videoInfo, err := getVideoInfo(vid)
 		if err != nil {
 			logger.Errorln("获取视频信息失败:", err)
 			continue
@@ -109,6 +109,6 @@ func HandleShortLink(ctx *zero.Ctx) {
 			continue
 		}
 
-		videoInfo.Send(ctx)
+		videoInfo.send(ctx)
 	}
 }

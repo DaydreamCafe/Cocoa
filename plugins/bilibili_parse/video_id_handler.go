@@ -6,28 +6,28 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 )
 
-// HandleVideoID 视频ID Handler
-func HandleVideoID(ctx *zero.Ctx) {
+// handleVideoID 视频ID Handler
+func handleVideoID(ctx *zero.Ctx) {
 	// 匹配结果
-	results := CompiledVIDRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
+	results := compiledVIDRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
 
 	// 循环匹配结果
-	var VID = make([]string, len(results))
+	var VIDs = make([]string, len(results))
 
 	for index, result := range results {
 		// 获取av号或者BV号
-		VID[index] = result[0]
+		VIDs[index] = result[0]
 		logger.Debugln("匹配视频ID成功:", result[0], ", MessageId:", ctx.Event.MessageID)
 	}
 
-	for _, vid := range VID {
+	for _, vid := range VIDs {
 		// 获取视频信息
-		videoInfo, err := GetVideoInfo(vid)
+		videoInfo, err := getVideoInfo(vid)
 		if err != nil {
 			logger.Errorln("获取视频信息失败:", err)
 			continue
 		}
 		// 发送视频信息
-		videoInfo.Send(ctx)
+		videoInfo.send(ctx)
 	}
 }

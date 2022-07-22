@@ -11,32 +11,32 @@ import (
 	zero "github.com/wdvxdr1123/ZeroBot"
 )
 
-// HandleMobileShare 移动端分享handler
-func HandleMobileShare(ctx *zero.Ctx) {
+// handleMobileShare 移动端分享handler
+func handleMobileShare(ctx *zero.Ctx) {
 	var appInfo MiniAppInfo
 	// 判断是否是移动端分享信息
-	if appInfo.IsBilibiliShare(ctx.Event.RawMessage) {
+	if appInfo.isBilibiliShare(ctx.Event.RawMessage) {
 		logger.Debugln("匹配移动端分享信息成功,MessageId:", ctx.Event.MessageID)
 
 		// 获取重定向链接
-		redictedLink, err := appInfo.GetRedictLink()
+		redictedLink, err := appInfo.getRedictLink()
 		if err != nil {
 			logger.Errorln("获取视频链接失败:", err)
 			return
 		}
 
 		// 匹配结果
-		results := CompiledVIDRegex.FindStringSubmatch(redictedLink)
+		results := compiledVIDRegex.FindStringSubmatch(redictedLink)
 		vid := results[0]
 		logger.Debugln("获取视频ID成功:", vid)
 
 		// 获取视频信息
-		videoInfo, err := GetVideoInfo(vid)
+		videoInfo, err := getVideoInfo(vid)
 		if err != nil {
 			logger.Errorln("获取视频信息失败:", err)
 			return
 		}
-		videoInfo.Send(ctx)
+		videoInfo.send(ctx)
 	}
 }
 
@@ -53,8 +53,8 @@ type MiniAppInfo struct {
 	} `json:"meta"`
 }
 
-// IsBilibiliShare 判断是否是移动端分享信息
-func (appInfo *MiniAppInfo) IsBilibiliShare(rawMessage string) bool {
+// isBilibiliShare 判断是否是移动端分享信息
+func (appInfo *MiniAppInfo) isBilibiliShare(rawMessage string) bool {
 	// 判断是否为json类型的消息段
 	if !strings.HasPrefix(rawMessage, "[CQ:json,") {
 		return false
@@ -76,8 +76,8 @@ func (appInfo *MiniAppInfo) IsBilibiliShare(rawMessage string) bool {
 	return false
 }
 
-// GetRedictLink 获取重定向链接
-func (appInfo *MiniAppInfo) GetRedictLink() (string, error) {
+// getRedictLink 获取重定向链接
+func (appInfo *MiniAppInfo) getRedictLink() (string, error) {
 	// 构造请求
 	request, err := http.NewRequest("GET", appInfo.Meta.Detail1.Qqdocurl, nil)
 	if err != nil {

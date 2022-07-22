@@ -24,8 +24,8 @@ type VideoInfo struct {
 	BVID     string
 }
 
-// Send 发送视频信息
-func (videoInfo VideoInfo) Send(ctx *zero.Ctx) {
+// send 发送视频信息
+func (videoInfo VideoInfo) send(ctx *zero.Ctx) {
 	ctx.SendChain(
 		message.Image(videoInfo.CoverURL),
 		message.Text(videoInfo.Title+"\n"),
