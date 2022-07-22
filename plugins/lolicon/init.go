@@ -21,5 +21,9 @@ func init() {
 	control.Registe(&Metadata)
 
 	// 处理get_loli命令
-	zero.OnFullMatch("get_loli", zero.OnlyGroup).SetBlock(true).Handle(HandleLoli)
+	commandGroup := []string{
+		"涩图",
+		"色图",
+	}
+	zero.OnFullMatchGroup(commandGroup, zero.OnlyGroup).SetBlock(true).Handle(HandleLoli)
 }

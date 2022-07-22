@@ -22,39 +22,21 @@ const (
 	deleteDelay = 100
 )
 
-/*{
-	"error":"",
-	"data":[{
-		"pid":87243091,
-		"p":0,
-		"uid":59336265,
-		"title":"マイクロ白ビキニドゥリンちゃん",
-		"author":"pottsness",
-		"r18":false,
-		"width":3000,
-		"height":5400,
-		"tags":["アークナイツ","明日方舟","Arknights","ドゥリン(アークナイツ)","杜林(明日方舟)","マイクロビキニ","极小比基尼","おっぱい","欧派","指を突っ込みたいへそ","好想用手指戳一下肚脐","マイクロビキニマント","剥ぎ取りたいブラ","让人想脱掉的胸罩"],
-		"ext":"png",
-		"uploadDate":1611387597000,
-		"urls":{"original":"https://i.pixiv.re/img-original/img/2021/01/23/16/39/57/87243091_p0.png"}
-		}
-	]
-}
-*/
-
-// API结构体
-type APIStruct struct {
+// LoliconAPI结构体
+type LoliconAPI struct {
 	Error string `json:"error"`
 	Data  struct {
-		Pid    int64  `json:"pid"`
-		Uid    int64  `json:"uid"`
-		Title  string `json:"title"`
-		Author string `json:"author"`
-		R18    bool   `json:"r18"`
-		Urls   string `json:"urls"`
+		PID    int64    `json:"pid"`
+		UID    int64    `json:"uid"`
+		Title  string   `json:"title"`
+		Author string   `json:"author"`
+		R18    bool     `json:"r18"`
+		Tags   []string `json:"tags"`
+		URLs   string   `json:"urls"`
 	} `json:"data"`
 }
 
+// HandleLoli get_loli命令handler
 func HandleLoli(ctx *zero.Ctx) {
 	//从API获取图片地址
 	request, err := http.NewRequest("GET", apiURL, nil)
@@ -70,14 +52,14 @@ func HandleLoli(ctx *zero.Ctx) {
 	}
 	defer response.Body.Close()
 
-	// 将请求结果JSON解析为APIStruct结构体
+	// 将请求结果JSON解析为LoliconAPI结构体
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		logger.Errorln("读取响应失败:", err)
 		return
 	}
 
-	var resp APIStruct
+	var resp LoliconAPI
 	err = json.Unmarshal(responseBody, &resp)
 	if err != nil {
 		logger.Errorln("JSON解析失败:", err)
@@ -89,8 +71,8 @@ func HandleLoli(ctx *zero.Ctx) {
 	}
 
 	// 发送图片
-	var imageURL = resp.Data.Urls
-	var R18 = resp.Data.R18
+	imageURL := resp.Data.URLs
+	R18 := resp.Data.R18
 	messageID := ctx.SendChain(message.Image(imageURL))
 
 	// 撤回图片
