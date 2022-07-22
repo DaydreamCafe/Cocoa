@@ -22,8 +22,8 @@ const (
 	deleteDelay = 100
 )
 
-// LoliconAPI LoliconAPI返回结果结构体
-type LoliconAPI struct {
+// APIResp LoliconAPI返回结果结构体
+type APIResp struct {
 	Error string `json:"error"`
 	Data  struct {
 		PID    int64    `json:"pid"`
@@ -52,14 +52,14 @@ func HandleLoli(ctx *zero.Ctx) {
 	}
 	defer response.Body.Close()
 
-	// 将请求结果JSON解析为LoliconAPI结构体
+	// 将请求结果JSON解析为APIResp结构体
 	responseBody, err := ioutil.ReadAll(response.Body)
 	if err != nil {
 		logger.Errorln("读取响应失败:", err)
 		return
 	}
 
-	var resp LoliconAPI
+	var resp APIResp
 	err = json.Unmarshal(responseBody, &resp)
 	if err != nil {
 		logger.Errorln("JSON解析失败:", err)
