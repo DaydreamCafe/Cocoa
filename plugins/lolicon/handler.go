@@ -19,25 +19,30 @@ const (
 	apiURL = "https://api.lolicon.app/setu/v2"
 
 	// deleteDelay 撤回图片的延迟
-	deleteDelay = 100
+	deleteDelay = 30
 )
+
+// ImgData 具体图片数据
+type ImgData struct {
+	PID    int64    `json:"pid"`
+	UID    int64    `json:"uid"`
+	Title  string   `json:"title"`
+	Author string   `json:"author"`
+	R18    bool     `json:"r18"`
+	Tags   []string `json:"tags"`
+	URLs   struct {
+		Original string `json:"original"`
+	} `json:"urls"`
+}
 
 // APIResp LoliconAPI返回结果结构体
 type APIResp struct {
-	Error string `json:"error"`
-	Data  struct {
-		PID    int64    `json:"pid"`
-		UID    int64    `json:"uid"`
-		Title  string   `json:"title"`
-		Author string   `json:"author"`
-		R18    bool     `json:"r18"`
-		Tags   []string `json:"tags"`
-		URLs   string   `json:"urls"`
-	} `json:"data"`
+	Error string    `json:"error"`
+	Data  []ImgData `json:"data"`
 }
 
-// HandleLoli get_loli命令handler
-func HandleLoli(ctx *zero.Ctx) {
+// handleLoli 涩图命令handler
+func handleLoli(ctx *zero.Ctx) {
 	//从API获取图片地址
 	request, err := http.NewRequest("GET", apiURL, nil)
 	if err != nil {
@@ -71,13 +76,9 @@ func HandleLoli(ctx *zero.Ctx) {
 	}
 
 	// 发送图片
-	imageURL := resp.Data.URLs
-	R18 := resp.Data.R18
-	messageID := ctx.SendChain(message.Image(imageURL))
+	messageID := ctx.SendChain(message.Image(resp.Data[0].URLs.Original))
 
 	// 撤回图片
-	if R18 {
-		time.Sleep(deleteDelay * time.Second)
-		ctx.DeleteMessage(messageID)
-	}
+	time.Sleep(deleteDelay * time.Second)
+	ctx.DeleteMessage(messageID)
 }

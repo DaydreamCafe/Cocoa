@@ -9,21 +9,20 @@ import (
 
 func init() {
 	// 设置插件信息
-	Metadata := control.Metadata{
+	metadata := control.Metadata{
 		Name:        "lolicon",
 		Version:     "1.0.0",
-		Description: "二次元萝莉",
-		Author:      "jiangnan777312",
-		Usage: `Lolicon插件
-		涩图|色图  得到一张loli的图片`,
+		Description: "二次元涩图",
+		Author:      "jiangnan777312 / WhitePaper233",
+		Usage:       "Lolicon插件\n-涩图|色图  得到一张loli的图片",
 	}
 	// 初始化插件
-	control.Registe(&Metadata)
+	control.Registe(&metadata)
 
 	// 处理涩图命令
 	commandGroup := []string{
 		"涩图",
 		"色图",
 	}
-	zero.OnFullMatchGroup(commandGroup, zero.OnlyGroup).SetBlock(true).Handle(HandleLoli)
+	zero.OnKeywordGroup(commandGroup, zero.OnlyGroup).SetBlock(true).Handle(handleLoli)
 }
