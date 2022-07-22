@@ -4,9 +4,9 @@
 	<h5>精简化的服务型机器人</h5>
 	<img src="https://count.getloli.com/get/@:DDC_Cocoa?theme=rule34" />
 </div>
-![miraigo](https://camo.githubusercontent.com/9edbf4b4ec5154c14b3ca68b76a2c2f496326b744bad4b769d09272c7748d69b/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4f6e65426f742d4d69726169476f2d677265656e2e7376673f7374796c653d736f6369616c266c6f676f3d6170707665796f72)](https://github.com/Mrs4s/MiraiGo) 
-![oicq](https://camo.githubusercontent.com/dc62e407b5f43566724086f092c685b1bbf5e9b041422bf9fcad71ba5a221efd/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4f6e65426f742d4f4943512d677265656e2e7376673f7374796c653d736f6369616c266c6f676f3d6170707665796f72)](https://github.com/takayama-lily/oicq)
-![mirai](https://camo.githubusercontent.com/6fe8778ebb72e1017772a85da0080bb3f886fc313f78f3bd7dbeef43ae439d11/68747470733a2f2f696d672e736869656c64732e696f2f62616467652f4f6e65426f742d4d697261692d677265656e2e7376673f7374796c653d736f6369616c266c6f676f3d6170707665796f72)](https://github.com/mamoe/mirai)
+[![miraigo](https://img.shields.io/badge/OneBot-MiraiGo-green.svg?style=social&logo=appveyor)](https://github.com/Mrs4s/MiraiGo)
+[![oicq](https://img.shields.io/badge/OneBot-OICQ-green.svg?style=social&logo=appveyor)](https://github.com/takayama-lily/oicq)
+[![mirai](https://img.shields.io/badge/OneBot-Mirai-green.svg?style=social&logo=appveyor)](https://github.com/mamoe/mirai)
 
 ## ✨ 简介
 
