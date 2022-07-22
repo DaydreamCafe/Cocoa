@@ -22,7 +22,7 @@ const (
 	deleteDelay = 100
 )
 
-// LoliconAPI结构体
+// LoliconAPI LoliconAPI返回结果结构体
 type LoliconAPI struct {
 	Error string `json:"error"`
 	Data  struct {
