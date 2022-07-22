@@ -25,13 +25,13 @@ func HandleHelp(ctx *zero.Ctx) {
 
 	// bot
 	var bot bool
-	fset.BoolVar(&bot, "b", true, "显示bot的帮助")
-	fset.BoolVar(&bot, "bot", true, "显示bot的帮助")
+	fset.BoolVar(&bot, "b", false, "显示bot的帮助")
+	fset.BoolVar(&bot, "bot", false, "显示bot的帮助")
 
 	// help
 	var help bool
-	fset.BoolVar(&help, "h", true, "显示help指令的帮助")
-	fset.BoolVar(&help, "help", true, "显示help指令的帮助")
+	fset.BoolVar(&help, "h", false, "显示help指令的帮助")
+	fset.BoolVar(&help, "help", false, "显示help指令的帮助")
 
 	args := shell.Parse(ctx.State["args"].(string))
 	err := fset.Parse(args)
