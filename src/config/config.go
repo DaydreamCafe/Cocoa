@@ -13,7 +13,7 @@ type Config struct {
 	SuperUsers    []int64  `yaml:"SuperUsers"`
 	CommandPrefix string   `yaml:"CommandPrefix"`
 	NickNames     []string `yaml:"NickNames"`
-	DefaultLevel  int      `yaml:"DefaultLevel"`
+	DefaultLevel  int64    `yaml:"DefaultLevel"`
 
 	Server struct {
 		Address string `yaml:"Address"`
@@ -37,12 +37,10 @@ func (cfg *Config) Load() {
 	configFile, err := io.ReadConfig()
 	if err != nil {
 		logger.Panic(err)
-		panic(err)
 	}
 
 	err = yaml.Unmarshal(configFile, &cfg)
 	if err != nil {
 		logger.Panic(err)
-		panic(err)
 	}
 }

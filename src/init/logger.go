@@ -43,6 +43,6 @@ func init() {
 		logger.SetLevel(logger.DebugLevel)
 		logger.Debugln("正在以 DEBUG 模式运行...")
 	} else {
-		logger.SetLevel(logger.ErrorLevel)
+		logger.SetLevel(logger.InfoLevel)
 	}
 }
