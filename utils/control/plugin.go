@@ -13,6 +13,7 @@ import (
 	"github.com/DaydreamCafe/Cocoa/V2/src/model"
 )
 
+// CheckPremissionHandler 包装handler, 使其拥有全局用户权限鉴权
 func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 	return func(ctx *zero.Ctx) {
 		// 读取配置文件
@@ -103,10 +104,10 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 
 		// 不满足SU和等级要求
 		ctx.SendChain(message.Text("您没有权限执行此命令"))
-		return
 	}
 }
 
+// CheckPremission 用户权限鉴权
 func CheckPremission(QID int64, minLevel int64) bool {
 	// 读取配置文件
 	cfg := config.Config{}
@@ -165,10 +166,7 @@ func CheckPremission(QID int64, minLevel int64) bool {
 	// 数据表无记录
 	if count == 0 {
 		// 直接与默认等级比较
-		if cfg.DefaultLevel >= minLevel {
-			return true
-		}
-		return false
+		return cfg.DefaultLevel >= minLevel
 	}
 
 	// 查询用户
