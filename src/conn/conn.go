@@ -6,6 +6,7 @@ import (
 
 	"gorm.io/driver/postgres"
 	"gorm.io/gorm"
+	"gorm.io/gorm/schema"
 
 	"github.com/DaydreamCafe/Cocoa/V2/src/config"
 )
@@ -47,7 +48,11 @@ func GetDB() (*gorm.DB, error) {
 				PreferSimpleProtocol: true,
 			},
 		),
-		&gorm.Config{},
+		&gorm.Config{
+			NamingStrategy: schema.NamingStrategy{
+				SingularTable: true,
+			},
+		},
 	)
 	return db, err
 }

@@ -16,12 +16,10 @@ type Metadata struct {
 	Description string
 	Author      string
 	Usage       string
+	Buitlin     bool
 }
 
 var (
-	// PluginMetadata 插件元数据
-	PluginMetadata *Metadata
-
 	// db 数据库d对象
 	db *gorm.DB
 )
@@ -32,24 +30,24 @@ func init() {
 	if err != nil {
 		logger.Panicln("获取数据库连接失败:", err)
 	}
-	err = db.AutoMigrate(&model.PluginModel{})
-	if err != nil {
-		logger.Panicln("数据库自动迁移失败:", err)
-	}
 }
 
 // Registe 向数据库注册插件
-func Registe(metadata *Metadata) {
-	PluginMetadata = metadata
+func Registe(metadata *Metadata) Engine {
+	pluginMetadata := metadata
 
-	result := db.Create(&model.PluginModel{
-		Name:    PluginMetadata.Name,
-		Version: PluginMetadata.Version,
-		Usage:   PluginMetadata.Usage,
+	result := db.Create(&model.Plugin{
+		Name:        pluginMetadata.Name,
+		Version:     pluginMetadata.Version,
+		Usage:       pluginMetadata.Usage,
+		Description: pluginMetadata.Description,
+		Buitlin:     pluginMetadata.Buitlin,
 	})
 	if result.Error != nil {
 		logger.Panicln("插件信息写入数据库失败:", result.Error)
 	}
 
 	logger.Infof("%s 插件加载成功", metadata.Name)
+
+	return getEngine(*pluginMetadata)
 }
