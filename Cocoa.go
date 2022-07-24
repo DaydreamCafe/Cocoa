@@ -14,14 +14,18 @@ import (
 	"github.com/DaydreamCafe/Cocoa/V2/src/config"
 	_ "github.com/DaydreamCafe/Cocoa/V2/src/init"
 
-	// bultin plugin packages
+	// high priority
 	_ "github.com/DaydreamCafe/Cocoa/V2/builtin/help"
+	_ "github.com/DaydreamCafe/Cocoa/V2/builtin/user_manager"
 
-	// external plugin packages
+	// normal priority
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bilibili_parse"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/char_reverser"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/coser"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/lolicon"
+
+	// low priority
+	_ "github.com/DaydreamCafe/Cocoa/V2/builtin/plugin_manager"
 )
 
 var (
