@@ -85,11 +85,22 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 		// 查询用户
 		var user model.UserPremissionModel
 		err = db.Where("qid = ?", ctx.Event.UserID).First(&user).Error
-		if err != nil {
+		if err != nil && err != gorm.ErrRecordNotFound {
 			logger.Error("用户鉴权失败:", err)
 			return
 		}
 
+		// 当无用户记录时
+		if err == gorm.ErrRecordNotFound {
+			if cfg.DefaultLevel >= minLevel {
+				handler(ctx)
+				return
+			}
+			ctx.SendChain(message.Text("您没有权限执行此命令"))
+			return
+		}
+
+		// 当有用户记录时
 		// 判断是否为SU
 		if user.IfSU {
 			handler(ctx)
@@ -172,11 +183,17 @@ func CheckPremission(QID int64, minLevel int64) bool {
 	// 查询用户
 	var user model.UserPremissionModel
 	err = db.Where("qid = ?", QID).First(&user).Error
-	if err != nil {
+	if err != nil && err != gorm.ErrRecordNotFound {
 		logger.Error("用户鉴权失败:", err)
 		return false
 	}
 
+	// 当无用户记录时
+	if err == gorm.ErrRecordNotFound {
+		return cfg.DefaultLevel >= minLevel
+	}
+
+	// 当有用户记录时
 	// 判断是否为SU
 	if user.IfSU {
 		return true
