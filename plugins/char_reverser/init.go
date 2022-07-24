@@ -2,8 +2,6 @@
 package charreverser
 
 import (
-	zero "github.com/wdvxdr1123/ZeroBot"
-
 	"github.com/DaydreamCafe/Cocoa/V2/utils/control"
 )
 
@@ -17,8 +15,10 @@ func init() {
 		Usage:       "CharReverser插件\n- 翻转 <英文字符串>  得到一个翻转的英文字符",
 	}
 	// 初始化插件
-	control.Registe(&metadata)
+	engine := control.Registe(&metadata)
 
 	// 处理翻转命令
-	zero.OnRegex(`翻转( )+[A-z]{1}([A-z]|\s)+[A-z]{1}`).SetBlock(true).Handle(handleReverse)
+	engine.OnRegex(`翻转( )+[A-z]{1}([A-z]|\s)+[A-z]{1}`).SetBlock(true).Handle(
+		control.CheckPremissionHandler(handleReverse, 5),
+	)
 }

@@ -33,14 +33,14 @@ func init() {
 		Usage:       "发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息",
 	}
 	// 初始化插件
-	control.Registe(&metadata)
+	engine := control.Registe(&metadata)
 
 	// 处理av号或者BV号
-	zero.OnRegex(VIDRegex, zero.OnlyGroup).Handle(handleVideoID)
+	engine.OnRegex(VIDRegex, zero.OnlyGroup).Handle(handleVideoID)
 
 	// 匹配移动端卡片分享信息
-	zero.OnMessage(zero.OnlyGroup).Handle(handleMobileShare)
+	engine.OnMessage(zero.OnlyGroup).Handle(handleMobileShare)
 
 	// 匹配短链接
-	zero.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(handleShortLink)
+	engine.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(handleShortLink)
 }
