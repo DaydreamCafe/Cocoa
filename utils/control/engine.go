@@ -9,6 +9,7 @@ import (
 	logger "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
 	"github.com/wdvxdr1123/ZeroBot/message"
+	"gorm.io/gorm"
 
 	"github.com/DaydreamCafe/Cocoa/V2/src/conn"
 	"github.com/DaydreamCafe/Cocoa/V2/src/model"
@@ -29,7 +30,7 @@ func getEngine(pluginMetadata Metadata) Engine {
 		// 连接数据库
 		db, err := conn.GetDB()
 		if err != nil {
-			logger.Panicln("获取数据库连接失败:", err)
+			logger.Errorln("获取数据库连接失败:", err)
 			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
 			return false
 		}
@@ -42,7 +43,7 @@ func getEngine(pluginMetadata Metadata) Engine {
 		var count int64
 		err = db.Model(&localPlugin).Count(&count).Error
 		if err != nil {
-			logger.Panicln("查询数据库失败:", err)
+			logger.Errorln("查询数据库失败:", err)
 			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
 			return false
 		}
@@ -51,10 +52,15 @@ func getEngine(pluginMetadata Metadata) Engine {
 		if count > 0 {
 			// 查询插件是否被局部禁用
 			err = db.Where("name = ?", pluginMetadata.Name).First(&localPlugin).Error
-			if err != nil {
-				logger.Panicln("查询插件是否被局部禁用失败:", err)
+			if err != nil && err != gorm.ErrRecordNotFound {
+				logger.Errorln("查询插件是否被局部禁用失败:", err)
 				ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
 				return false
+			}
+
+			// 当插件没有记录时, 返回true
+			if err == gorm.ErrRecordNotFound {
+				return true
 			}
 
 			// 当插件被局部禁用时, 返回false
@@ -73,7 +79,7 @@ func getEngine(pluginMetadata Metadata) Engine {
 		var globalPlugin model.GlobalPluginManagement
 		err = db.Where("name = ?", pluginMetadata.Name).First(&globalPlugin).Error
 		if err != nil {
-			logger.Panicln("查询插件是否被全部禁用失败:", err)
+			logger.Errorln("查询插件是否被全部禁用失败:", err)
 			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
 			return false
 		}

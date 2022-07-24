@@ -298,7 +298,9 @@ func enablePlugin(pluginName string, groupID int64) error {
 		return errors.New("指令执行失败: 查询插件记录失败")
 	}
 
+	// 当表中有记录时
 	if count > 0 {
+		// 查询该插件的记录是否存在
 		var plugin model.LocalPluginManagement
 		err = db.Where("name = ?", pluginName).First(&plugin).Error
 		if err != nil && err != gorm.ErrRecordNotFound {
@@ -306,6 +308,12 @@ func enablePlugin(pluginName string, groupID int64) error {
 			return errors.New("指令执行失败: 查询插件失败")
 		}
 
+		// 当记录不存在时
+		if err == gorm.ErrRecordNotFound {
+			return errors.New("指令执行失败: 插件已经被局部启用")
+		}
+
+		// 当记录存在时
 		// 判断群组列表里是否有群组
 		if plugin.BanedGroupID != "" {
 			// 如果有群组, 判断当前群组是否存在其中
@@ -389,9 +397,9 @@ func disablePlugin(pluginName string, groupID int64) error {
 		return errors.New("指令执行失败: 查询插件记录失败")
 	}
 
-	// 判断是否有记录
+	// 当表中有记录时
 	if count > 0 {
-		// 插件记录存在
+		// 判断是否有记录
 		var plugin model.LocalPluginManagement
 		err = db.Where("name = ?", pluginName).First(&plugin).Error
 		if err != nil && err != gorm.ErrRecordNotFound {
@@ -399,6 +407,21 @@ func disablePlugin(pluginName string, groupID int64) error {
 			return errors.New("指令执行失败")
 		}
 
+		// 当记录不存在时
+		if err == gorm.ErrRecordNotFound {
+			newRecord := model.LocalPluginManagement{
+				Name:         pluginName,
+				BanedGroupID: strconv.FormatInt(groupID, 10),
+			}
+			err = db.Create(&newRecord).Error
+			if err != nil {
+				logger.Errorln("创建插件失败: ", err)
+				return errors.New("指令执行失败: 无法创建插件记录")
+			}
+			return nil
+		}
+
+		// 当记录存在时
 		// 判断群组列表里是否有群组
 		if plugin.BanedGroupID != "" {
 			// 如果有群组, 判断当前群组是否存在其中
@@ -433,7 +456,7 @@ func disablePlugin(pluginName string, groupID int64) error {
 		return nil
 	}
 
-	// 如果没有记录则创建一条记录
+	// 若表中没有记录, 则直接创建
 	newRecord := model.LocalPluginManagement{
 		Name:         pluginName,
 		BanedGroupID: strconv.FormatInt(groupID, 10),
