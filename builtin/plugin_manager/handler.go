@@ -65,9 +65,10 @@ func handlePlugin(ctx *zero.Ctx) {
 		if control.CheckPremission(ctx.Event.UserID, 5) {
 			hasArg = true
 			ctx.SendChain(message.Text(getPluginList()))
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return	
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 
 	// 处理ban指令
@@ -80,9 +81,10 @@ func handlePlugin(ctx *zero.Ctx) {
 			} else {
 				ctx.SendChain(message.Text((fmt.Sprintf("插件%s全局禁用成功", ban))))
 			}
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 
 	// 处理unban指令
@@ -95,9 +97,10 @@ func handlePlugin(ctx *zero.Ctx) {
 			} else {
 				ctx.SendChain(message.Text(fmt.Sprintf("插件%s全局解禁成功", unban)))
 			}
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 
 	// 处理enable指令
@@ -110,9 +113,10 @@ func handlePlugin(ctx *zero.Ctx) {
 			} else {
 				ctx.SendChain(message.Text(fmt.Sprintf("插件%s局部启用成功", enable)))
 			}
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 
 	// 处理disable指令
@@ -125,9 +129,10 @@ func handlePlugin(ctx *zero.Ctx) {
 			} else {
 				ctx.SendChain(message.Text(fmt.Sprintf("插件%s局部禁用成功", disable)))
 			}
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 
 	// 处理help指令
@@ -135,18 +140,20 @@ func handlePlugin(ctx *zero.Ctx) {
 		if control.CheckPremission(ctx.Event.UserID, 5) {
 			hasArg = true
 			ctx.SendChain(message.Text(usage))
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 
 	// 没有提供参数时，显示帮助
 	if !hasArg {
 		if control.CheckPremission(ctx.Event.UserID, 5) {
 			ctx.SendChain(message.Text(usage))
+		} else {
+			ctx.SendChain(message.Text("你没有权限执行这条指令"))
+			return
 		}
-		ctx.SendChain(message.Text("你没有权限执行这条指令"))
-		return
 	}
 }
 
