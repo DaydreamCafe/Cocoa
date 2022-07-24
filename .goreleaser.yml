@@ -68,9 +68,8 @@ changelog:
 archives:
   - id: binary
     builds:
-      - nowin
       - win
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}_binary{{ end }}"
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}_binary"
     format_overrides:
       - goos: windows
         format: binary
@@ -79,7 +78,7 @@ archives:
     builds:
       - nowin
       - win
-    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}_full{{ end }}"
+    name_template: "{{ .ProjectName }}_{{ .Os }}_{{ .Arch }}{{ if .Arm }}v{{ .Arm }}{{ end }}_full"
     format_overrides:
       - goos: windows
         format: zip
