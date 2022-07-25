@@ -69,6 +69,13 @@ func getPluginUsage(name string) string {
 		return "未找到该插件的帮助信息"
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Error("获取数据库连接失败:", err)
+		return "未找到该插件的帮助信息"
+	}
+	defer sqlDB.Close()
+
 	plugin_metadata := model.Plugin{}
 	db.Where("name = ?", name).First(&plugin_metadata)
 	if plugin_metadata.Usage == "" {

@@ -15,6 +15,12 @@ func initDatabase() {
 		logger.Panicln(err)
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Panicln(err)
+	}
+	defer sqlDB.Close()
+
 	// pluginModels 插件元数据表模型切片
 	var pluginModels []model.Plugin
 

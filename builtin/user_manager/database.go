@@ -19,6 +19,12 @@ func initDatabase() {
 		logger.Panicln("数据库连接失败: ", err)
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Panicln("数据库连接失败: ", err)
+	}
+	defer sqlDB.Close()
+
 	/*
 		初始化封禁表
 	*/
