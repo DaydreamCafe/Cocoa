@@ -3,7 +3,7 @@ package control
 
 import (
 	logger "github.com/sirupsen/logrus"
-	"gorm.io/gorm"
+	zero "github.com/wdvxdr1123/ZeroBot"
 
 	"github.com/DaydreamCafe/Cocoa/V2/src/conn"
 	"github.com/DaydreamCafe/Cocoa/V2/src/model"
@@ -19,21 +19,19 @@ type Metadata struct {
 	Buitlin     bool
 }
 
-var (
-	// db 数据库d对象
-	db *gorm.DB
-)
-
-func init() {
-	var err error
-	db, err = conn.GetDB()
+// Registe 向数据库注册插件
+func Registe(metadata *Metadata) zero.Engine {
+	db, err := conn.GetDB()
 	if err != nil {
 		logger.Panicln("获取数据库连接失败:", err)
 	}
-}
 
-// Registe 向数据库注册插件
-func Registe(metadata *Metadata) Engine {
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Panicln("获取数据库连接失败:", err)
+	}
+	defer sqlDB.Close()
+	
 	pluginMetadata := metadata
 
 	result := db.Create(&model.Plugin{

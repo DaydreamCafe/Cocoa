@@ -166,6 +166,13 @@ func getPluginList() string {
 		return "查询插件列表失败: 数据库连接失败"
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("数据库连接失败: ", err)
+		return "查询插件列表失败: 数据库连接失败"
+	}
+	defer sqlDB.Close()
+
 	var plugins []model.Plugin
 	err = db.Find(&plugins).Error
 	if err != nil {
@@ -197,6 +204,13 @@ func banPlugin(pluginName string) error {
 		logger.Errorln("连接数据库失败: ", err)
 		return errors.New("数据库连接失败")
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("连接数据库失败: ", err)
+		return errors.New("数据库连接失败")
+	}
+	defer sqlDB.Close()
 
 	// 查询插件是否存在
 	var plugin model.GlobalPluginManagement
@@ -239,6 +253,13 @@ func unbanPlugin(pluginName string) error {
 		return errors.New("数据库连接失败")
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("连接数据库失败: ", err)
+		return errors.New("数据库连接失败")
+	}
+	defer sqlDB.Close()
+
 	// 查询插件是否存在
 	var plugin model.GlobalPluginManagement
 	err = db.Where("name = ?", pluginName).First(&plugin).Error
@@ -279,6 +300,13 @@ func enablePlugin(pluginName string, groupID int64) error {
 		logger.Errorln("连接数据库失败: ", err)
 		return errors.New("数据库连接失败")
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("连接数据库失败: ", err)
+		return errors.New("数据库连接失败")
+	}
+	defer sqlDB.Close()
 
 	// 判断是否为内建插件
 	var pluginInfo model.GlobalPluginManagement
@@ -378,6 +406,13 @@ func disablePlugin(pluginName string, groupID int64) error {
 		logger.Errorln("连接数据库失败: ", err)
 		return errors.New("数据库连接失败")
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("连接数据库失败: ", err)
+		return errors.New("数据库连接失败")
+	}
+	defer sqlDB.Close()
 
 	// 判断是否为内建插件
 	var pluginInfo model.GlobalPluginManagement

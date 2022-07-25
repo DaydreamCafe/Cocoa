@@ -14,6 +14,12 @@ func init() {
 		logger.Panicln(err)
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Panicln(err)
+	}
+	defer sqlDB.Close()
+
 	db.Exec("DROP TABLE IF EXISTS plugin;")
 	// 迁移插件元数据表
 	err = db.AutoMigrate(&model.Plugin{})

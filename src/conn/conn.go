@@ -17,6 +17,9 @@ var (
 
 	// dsn 数据库连接字符串
 	dsn string
+
+	// db 数据库对象指针
+	db *gorm.DB
 )
 
 func init() {
@@ -37,15 +40,12 @@ func init() {
 
 // GetDB 获取数据库对象指针
 func GetDB() (*gorm.DB, error) {
-	var db *gorm.DB
 	var err error
 	// open database
 	db, err = gorm.Open(
 		postgres.New(
 			postgres.Config{
 				DSN: dsn,
-				// disables implicit prepared statement usage
-				PreferSimpleProtocol: true,
 			},
 		),
 		&gorm.Config{

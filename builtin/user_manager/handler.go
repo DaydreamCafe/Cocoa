@@ -146,6 +146,13 @@ func setPermissionLevel(QID int64, targetLevel int64) error {
 		return errors.New("指令执行失败: 无法连接到数据库")
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("更新用户权限失败: ", err)
+		return errors.New("指令执行失败: 无法连接到数据库")
+	}
+	defer sqlDB.Close()
+
 	// 查询表中是否有记录
 	var count int64
 	err = db.Model(&model.UserPremissionModel{}).Count(&count).Error
@@ -207,6 +214,13 @@ func banUser(QID int64, targetTime int64) error {
 		logger.Errorln("封禁用户失败: ", err)
 		return errors.New("指令执行失败: 无法连接到数据库")
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("封禁用户失败: ", err)
+		return errors.New("指令执行失败: 无法连接到数据库")
+	}
+	defer sqlDB.Close()
 
 	// 判断目标用户是否为SU
 	var userPermission model.UserPremissionModel
@@ -311,6 +325,13 @@ func pardonUser(QID int64) error {
 		return errors.New("指令执行失败: 无法连接到数据库")
 	}
 
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("解封用户失败: ", err)
+		return errors.New("指令执行失败: 无法连接到数据库")
+	}
+	defer sqlDB.Close()
+
 	// 判断目标用户是否为SU
 	var userPermission model.UserPremissionModel
 	// 查询表中是否有记录
@@ -378,6 +399,13 @@ func resetUser(QID int64) error {
 		logger.Errorln("重置用户等级和封禁时间失败: ", err)
 		return errors.New("指令执行失败: 无法连接到数据库")
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Errorln("重置用户等级和封禁时间失败: ", err)
+		return errors.New("指令执行失败: 无法连接到数据库")
+	}
+	defer sqlDB.Close()
 
 	// 重置用户等级
 	var userPermission model.UserPremissionModel

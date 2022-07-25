@@ -1,3 +1,4 @@
+// Package control 插件控制模块
 package control
 
 import (
@@ -26,6 +27,13 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 			logger.Error("用户鉴权失败:", err)
 			return
 		}
+
+		sqlDB, err := db.DB()
+		if err != nil {
+			logger.Error("用户鉴权失败:", err)
+			return
+		}
+		defer sqlDB.Close()
 
 		// 查询用户封禁
 		// 数据表判空
@@ -103,6 +111,7 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 		// 当有用户记录时
 		// 判断是否为SU
 		if user.IfSU {
+			logger.Debugln("超级管理员用户:", ctx.Event.UserID)
 			handler(ctx)
 			return
 		}
@@ -130,6 +139,13 @@ func CheckPremission(QID int64, minLevel int64) bool {
 		logger.Error("用户鉴权失败:", err)
 		return false
 	}
+
+	sqlDB, err := db.DB()
+	if err != nil {
+		logger.Error("用户鉴权失败:", err)
+		return false
+	}
+	defer sqlDB.Close()
 
 	// 查询用户封禁
 	// 数据表判空

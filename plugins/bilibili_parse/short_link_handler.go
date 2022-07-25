@@ -12,14 +12,6 @@ import (
 
 // handleShortLink 短链接handler
 func handleShortLink(ctx *zero.Ctx) {
-	// 如果是卡片信息, 则跳过
-	if strings.HasPrefix(
-		ctx.Event.RawMessage,
-		`[CQ:json,data={"app":"com.tencent.miniapp_01"&#44;`,
-	) {
-		return
-	}
-
 	logger.Debugln("匹配短链分享信息成功,MessageId:", ctx.Event.MessageID)
 	// 匹配结果
 	results := compiledShortLinkRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
