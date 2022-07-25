@@ -38,9 +38,6 @@ func init() {
 	// 处理av号或者BV号
 	engine.OnRegex(VIDRegex, zero.OnlyGroup).Handle(handleVideoID)
 
-	// 匹配移动端卡片分享信息
-	engine.OnMessage(zero.OnlyGroup).Handle(handleMobileShare)
-
 	// 匹配短链接
 	engine.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(handleShortLink)
 }
