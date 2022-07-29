@@ -31,7 +31,7 @@ func Registe(metadata *Metadata) zero.Engine {
 		logger.Panicln("获取数据库连接失败:", err)
 	}
 	defer sqlDB.Close()
-	
+
 	pluginMetadata := metadata
 
 	result := db.Create(&model.Plugin{
