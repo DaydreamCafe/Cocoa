@@ -5,9 +5,11 @@
 	<img src="https://count.getloli.com/get/@:DDC_Cocoa?theme=rule34" />
 </div>
 
-[![miraigo](https://img.shields.io/badge/OneBot-MiraiGo-green.svg?style=social&logo=appveyor)](https://github.com/Mrs4s/MiraiGo)
-[![oicq](https://img.shields.io/badge/OneBot-OICQ-green.svg?style=social&logo=appveyor)](https://github.com/takayama-lily/oicq)
-[![mirai](https://img.shields.io/badge/OneBot-Mirai-green.svg?style=social&logo=appveyor)](https://github.com/mamoe/mirai)
+[![miraigo](https://img.shields.io/badge/OneBot-MiraiGo-green.svg?style=for-the-badge&logo=appveyor&color=blue)](https://github.com/Mrs4s/MiraiGo)
+[![oicq](https://img.shields.io/badge/OneBot-OICQ-green.svg?style=for-the-badge&logo=appveyor&color=blue)](https://github.com/takayama-lily/oicq)
+[![mirai](https://img.shields.io/badge/OneBot-Mirai-green.svg?style=for-the-badge&logo=appveyor&color=blue)](https://github.com/mamoe/mirai)
+[![build status](https://img.shields.io/github/workflow/status/DaydreamCafe/Cocoa/%E5%8F%91%E8%A1%8C%E7%89%88?label=Release%20Build&style=for-the-badge)](https://github.com/DaydreamCafe/Cocoa/releases)
+[![license](https://img.shields.io/github/license/DaydreamCafe/Cocoa?style=for-the-badge)](https://github.com/DaydreamCafe/Cocoa/blob/V2/LICENSE)
 
 ## ✨ 简介
 
