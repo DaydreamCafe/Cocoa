@@ -43,3 +43,6 @@ Cocoa 的初衷是构建一个高可用且小巧的QQ机器人后端; 并提供�
 - [ZeroBot](https://github.com/wdvxdr1123/ZeroBot)
 - [ATRI](https://github.com/Kyomotoi/ATRI)
 - [ZeroBot-Plugin](https://github.com/FloatTech/ZeroBot-Plugin)
+
+## 📄 许可证
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2FDaydreamCafe%2FCocoa.svg?type=large)](https://app.fossa.com/projects/git%2Bgithub.com%2FDaydreamCafe%2FCocoa?ref=badge_large)
