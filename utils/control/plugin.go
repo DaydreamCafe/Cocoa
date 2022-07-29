@@ -15,7 +15,7 @@ import (
 )
 
 // CheckPremissionHandler 包装handler, 使其拥有全局用户权限鉴权
-func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
+func CheckPremissionHandler(handler zero.Handler, minLevel int64, echoLevel EchoLevel) zero.Handler {
 	return func(ctx *zero.Ctx) {
 		// 读取配置文件
 		cfg := config.Config{}
@@ -58,7 +58,9 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 			if err == nil {
 				// 判断用户是否在封禁时间内
 				if banedUser.UnbanTimeStamp > time.Now().Unix() {
-					ctx.SendChain(message.Text("您没有权限执行此命令"))
+					if echoLevel == 2 || echoLevel == 3 {
+						ctx.SendChain(message.Text("您没有权限执行此命令"))
+					}
 					return
 				}
 
@@ -86,7 +88,9 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 				handler(ctx)
 				return
 			}
-			ctx.SendChain(message.Text("您没有权限执行此命令"))
+			if echoLevel == 2 || echoLevel == 3 {
+				ctx.SendChain(message.Text("您没有权限执行此命令"))
+			}
 			return
 		}
 
@@ -104,14 +108,15 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 				handler(ctx)
 				return
 			}
-			ctx.SendChain(message.Text("您没有权限执行此命令"))
+			if echoLevel == 2 || echoLevel == 3 {
+				ctx.SendChain(message.Text("您没有权限执行此命令"))
+			}
 			return
 		}
 
 		// 当有用户记录时
 		// 判断是否为SU
 		if user.IfSU {
-			logger.Debugln("超级管理员用户:", ctx.Event.UserID)
 			handler(ctx)
 			return
 		}
@@ -123,7 +128,9 @@ func CheckPremissionHandler(handler zero.Handler, minLevel int64) zero.Handler {
 		}
 
 		// 不满足SU和等级要求
-		ctx.SendChain(message.Text("您没有权限执行此命令"))
+		if echoLevel == 2 || echoLevel == 3 {
+			ctx.SendChain(message.Text("您没有权限执行此命令"))
+		}
 	}
 }
 

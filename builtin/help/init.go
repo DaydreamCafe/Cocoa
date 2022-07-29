@@ -23,7 +23,7 @@ func init() {
 		Buitlin:     true,
 	}
 	// 初始化插件
-	engine := control.Registe(&metadata)
+	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理help命令
 	var helpCommands = []string{

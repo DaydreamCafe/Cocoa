@@ -20,7 +20,7 @@ type Metadata struct {
 }
 
 // Registe 向数据库注册插件
-func Registe(metadata *Metadata) zero.Engine {
+func Registe(metadata *Metadata, echoLevel EchoLevel) zero.Engine {
 	db, err := conn.GetDB()
 	if err != nil {
 		logger.Panicln("获取数据库连接失败:", err)
@@ -47,5 +47,5 @@ func Registe(metadata *Metadata) zero.Engine {
 
 	logger.Infof("%s 插件加载成功", metadata.Name)
 
-	return getEngine(*pluginMetadata)
+	return getEngine(*pluginMetadata, echoLevel)
 }

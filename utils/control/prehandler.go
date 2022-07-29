@@ -15,20 +15,25 @@ import (
 	"github.com/DaydreamCafe/Cocoa/V2/src/model"
 )
 
-func pluginCheck(pluginMetadata Metadata) zero.Rule {
+// 通用的全局插件prehandler, 用于确认插件是否处于可用状态
+func pluginCheck(pluginMetadata Metadata, echoLevel EchoLevel) zero.Rule {
 	return func(ctx *zero.Ctx) bool {
 		// 连接数据库
 		db, err := conn.GetDB()
 		if err != nil {
 			logger.Errorln("获取数据库连接失败:", err)
-			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			if echoLevel == 1 || echoLevel == 3 {
+				ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			}
 			return false
 		}
 
 		sqlDB, err := db.DB()
 		if err != nil {
 			logger.Errorln("获取数据库连接失败:", err)
-			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			if echoLevel == 1 || echoLevel == 3 {
+				ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			}
 			return false
 		}
 		defer sqlDB.Close()
@@ -42,7 +47,9 @@ func pluginCheck(pluginMetadata Metadata) zero.Rule {
 		err = db.Model(&localPlugin).Count(&count).Error
 		if err != nil {
 			logger.Errorln("查询数据库失败:", err)
-			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			if echoLevel == 1 || echoLevel == 3 {
+				ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			}
 			return false
 		}
 
@@ -52,7 +59,9 @@ func pluginCheck(pluginMetadata Metadata) zero.Rule {
 			err := db.Where("name = ?", pluginMetadata.Name).First(&localPlugin).Error
 			if err != nil && err != gorm.ErrRecordNotFound {
 				logger.Errorln("查询插件是否被局部禁用失败:", err)
-				ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+				if echoLevel == 1 || echoLevel == 3 {
+					ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+				}
 				return false
 			}
 
@@ -63,7 +72,9 @@ func pluginCheck(pluginMetadata Metadata) zero.Rule {
 				currentGroupID := strconv.FormatInt(ctx.Event.GroupID, 10)
 				for _, groupID := range banedGroups {
 					if groupID == currentGroupID {
-						ctx.SendChain(message.Text(fmt.Sprintf("%s插件已在该群被禁用", pluginMetadata.Name)))
+						if echoLevel == 1 || echoLevel == 3 {
+							ctx.SendChain(message.Text(fmt.Sprintf("%s插件已在该群被禁用", pluginMetadata.Name)))
+						}
 						return false
 					}
 				}
@@ -77,13 +88,17 @@ func pluginCheck(pluginMetadata Metadata) zero.Rule {
 		err = db.Where("name = ?", pluginMetadata.Name).First(&globalPlugin).Error
 		if err != nil {
 			logger.Errorln("查询插件是否被全部禁用失败:", err)
-			ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			if echoLevel == 1 || echoLevel == 3 {
+				ctx.SendChain(message.Text("插件功能错误: 数据库错误"))
+			}
 			return false
 		}
 
 		// 当插件被全部禁用时, 返回false
 		if globalPlugin.IsBaned {
-			ctx.SendChain(message.Text(fmt.Sprintf("%s插件已被全局禁用", pluginMetadata.Name)))
+			if echoLevel == 1 || echoLevel == 3 {
+				ctx.SendChain(message.Text(fmt.Sprintf("%s插件已被全局禁用", pluginMetadata.Name)))
+			}
 			return false
 		}
 

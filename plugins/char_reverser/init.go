@@ -15,10 +15,10 @@ func init() {
 		Usage:       "CharReverser插件\n- 翻转 <英文字符串>  得到一个翻转的英文字符",
 	}
 	// 初始化插件
-	engine := control.Registe(&metadata)
+	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理翻转命令
 	engine.OnRegex(`翻转( )+[A-z]{1}([A-z]|\s)+[A-z]{1}`).SetBlock(true).Handle(
-		control.CheckPremissionHandler(handleReverse, 5),
+		control.CheckPremissionHandler(handleReverse, 5, control.EchoAny),
 	)
 }

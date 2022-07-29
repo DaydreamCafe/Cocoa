@@ -17,10 +17,10 @@ func init() {
 		Usage:       "Coser插件\n-coser  得到一张coser的图片",
 	}
 	// 初始化插件
-	engine := control.Registe(&metadata)
+	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理coser命令
 	engine.OnFullMatch("coser", zero.OnlyGroup).SetBlock(true).Handle(control.CheckPremissionHandler(
-		handleCoser, 5),
+		handleCoser, 5, control.EchoAny),
 	)
 }

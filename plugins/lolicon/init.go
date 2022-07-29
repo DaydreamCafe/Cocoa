@@ -17,7 +17,7 @@ func init() {
 		Usage:       "Lolicon插件\n-涩图|色图  得到一张loli的图片",
 	}
 	// 初始化插件
-	engine := control.Registe(&metadata)
+	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理涩图命令
 	commandGroup := []string{
@@ -25,6 +25,6 @@ func init() {
 		"色图",
 	}
 	engine.OnKeywordGroup(commandGroup, zero.OnlyGroup).SetBlock(true).Handle(
-		control.CheckPremissionHandler(handleLoli, 5),
+		control.CheckPremissionHandler(handleLoli, 5, control.EchoAny),
 	)
 }

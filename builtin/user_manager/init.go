@@ -28,7 +28,7 @@ func init() {
 		Buitlin:     true,
 	}
 	// 初始化插件
-	engine := control.Registe(&metadata)
+	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 更新用户相关数据表
 	initDatabase()

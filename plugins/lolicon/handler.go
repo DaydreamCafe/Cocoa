@@ -76,9 +76,20 @@ func handleLoli(ctx *zero.Ctx) {
 	}
 
 	// 发送图片
-	messageID := ctx.SendChain(message.Image(resp.Data[0].URLs.Original))
+	msg := message.Image(resp.Data[0].URLs.Original)
+	rsp := ctx.CallAction("send_group_msg", zero.Params{
+		"group_id": ctx.Event.GroupID,
+		"message": msg,
+	}).Data.Get("message_id")
+	
+	if rsp.Exists() {
+		logger.Infof("发送群消息(%v): [CQ:image,file=%v] (id=%v)", ctx.Event.GroupID, resp.Data[0].URLs.Original, rsp.Int())
 
-	// 撤回图片
-	time.Sleep(deleteDelay * time.Second)
-	ctx.DeleteMessage(messageID)
+		// 撤回图片
+		time.Sleep(deleteDelay * time.Second)
+		ctx.DeleteMessage(message.NewMessageIDFromInteger(rsp.Int()))
+		return
+	}
+
+	ctx.SendChain(message.Image("https://pic.imgdb.cn/item/62e3afbdf54cd3f937d4b1af.jpg"))
 }

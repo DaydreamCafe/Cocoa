@@ -33,11 +33,15 @@ func init() {
 		Usage:       "发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息",
 	}
 	// 初始化插件
-	engine := control.Registe(&metadata)
+	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理av号或者BV号
-	engine.OnRegex(VIDRegex, zero.OnlyGroup).Handle(handleVideoID)
+	engine.OnRegex(VIDRegex, zero.OnlyGroup).Handle(
+		control.CheckPremissionHandler(handleVideoID, 5, control.OnlyEchoError),
+	)
 
-	// 匹配短链接
-	engine.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(handleShortLink)
+	// 匹配短链接和卡片信息
+	engine.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(
+		control.CheckPremissionHandler(handleShortLink, 5, control.OnlyEchoError),
+	)
 }
