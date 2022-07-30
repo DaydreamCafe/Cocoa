@@ -23,6 +23,7 @@ import (
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/char_reverser"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/coser"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/lolicon"
+	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/github_parse"
 
 	// low priority
 	_ "github.com/DaydreamCafe/Cocoa/V2/builtin/plugin_manager"

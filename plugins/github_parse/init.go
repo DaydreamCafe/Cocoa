@@ -1,4 +1,4 @@
-// Package github github仓库解析
+// Package githubparse github仓库解析
 package githubparse
 
 import (
@@ -9,15 +9,11 @@ import (
 	"github.com/DaydreamCafe/Cocoa/V2/utils/control"
 )
 
-const (
-	// GithubRegex 链接正则表达式
-	GithubRegex = `github\.com\/([^(\s|\/)]+\/[^(\s|\/)]+)`
-)
+// githubRegex 链接正则表达式
+const githubRegex = `github\.com\/([^(\s|\/)]+\/[^(\s|\/)]+)`
 
-var (
-	// compiledGithubRegex 编译后的链接正则表达式
-	compiledGithubRegex *regexp.Regexp = regexp.MustCompile(GithubRegex)
-)
+// compiledGithubRegex 编译后的链接正则表达式
+var compiledGithubRegex = regexp.MustCompile(githubRegex)
 
 func init() {
 	// 设置插件信息
@@ -25,14 +21,15 @@ func init() {
 		Name:        "github_parse",
 		Version:     "1.0.0",
 		Description: "获得github仓库简介",
-		Author:      "jiangnan777312",
+		Author:      "jiangnan777312 / WhitePaper233",
 		Usage:       "github链接  得到匹配的仓库简介",
 	}
+
 	// 初始化插件
 	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理github仓库链接
-	engine.OnRegex(GithubRegex, zero.OnlyGroup).Handle(
+	engine.OnRegex(githubRegex, zero.OnlyGroup).Handle(
 		control.CheckPremissionHandler(handleGithubLink, 5, control.OnlyEchoError),
 	)
 }
