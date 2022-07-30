@@ -3,8 +3,9 @@ package lolicon
 
 import (
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
+	"net/url"
+	"strings"
 	"time"
 
 	logger "github.com/sirupsen/logrus"
@@ -13,8 +14,6 @@ import (
 )
 
 const (
-	// UA User-Agent
-	UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
 	// apiURL API地址
 	apiURL = "https://api.lolicon.app/setu/v2"
 
@@ -43,14 +42,33 @@ type APIResp struct {
 
 // handleLoli 涩图命令handler
 func handleLoli(ctx *zero.Ctx) {
-	//从API获取图片地址
-	request, err := http.NewRequest("GET", apiURL, nil)
-	if err != nil {
-		logger.Errorln("创建请求失败:", err)
-		return
+	// 请求URL
+	var reqURL string = apiURL
+
+	// 解析tag
+	msg := ctx.Event.Message.String()
+	var tagGroup []string
+	if len(msg) > 6 {
+		tags := ctx.Event.Message.String()[7:]
+		tagGroup = strings.Split(tags, "&amp;")
+
+		// 构造请求URL
+		var reqURLBuilder strings.Builder
+		reqURLBuilder.WriteString(apiURL)
+		reqURLBuilder.WriteRune('?')
+		for index, orTags := range tagGroup {
+			if index != 0 {
+				reqURLBuilder.WriteRune('&')
+			}
+			reqURLBuilder.WriteString("tag=")
+			reqURLBuilder.WriteString(url.QueryEscape(orTags))
+		}
+		reqURL = reqURLBuilder.String()
 	}
-	request.Header.Set("User-Agent", UA)
-	response, err := http.DefaultClient.Do(request)
+	logger.Debugln(reqURL)
+
+	//从API获取图片地址
+	response, err := http.Get(reqURL)
 	if err != nil {
 		logger.Errorln("请求失败:", err)
 		return
@@ -58,28 +76,25 @@ func handleLoli(ctx *zero.Ctx) {
 	defer response.Body.Close()
 
 	// 将请求结果JSON解析为APIResp结构体
-	responseBody, err := ioutil.ReadAll(response.Body)
-	if err != nil {
-		logger.Errorln("读取响应失败:", err)
-		return
-	}
-
 	var resp APIResp
-	err = json.Unmarshal(responseBody, &resp)
+	err = json.NewDecoder(response.Body).Decode(&resp)
 	if err != nil {
 		logger.Errorln("JSON解析失败:", err)
 		return
 	}
-	if resp.Error != "" {
-		logger.Errorln("API请求失败:", err)
+
+	// 发送图片
+	
+	// 处理没有该标签涩图的情况
+	if len(resp.Data) < 1 {
+		ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("未找到指定标签的涩图"))
 		return
 	}
 
-	// 发送图片
-	msg := message.Image(resp.Data[0].URLs.Original)
+	cqcode := message.Image(resp.Data[0].URLs.Original)
 	rsp := ctx.CallAction("send_group_msg", zero.Params{
 		"group_id": ctx.Event.GroupID,
-		"message": msg,
+		"message": cqcode,
 	}).Data.Get("message_id")
 	
 	if rsp.Exists() {
@@ -91,5 +106,9 @@ func handleLoli(ctx *zero.Ctx) {
 		return
 	}
 
-	ctx.SendChain(message.Image("https://pic.imgdb.cn/item/62e3afbdf54cd3f937d4b1af.jpg"))
+	ctx.SendChain(
+		message.Reply(ctx.Event.MessageID), 
+		message.Text("图片发送失败, 你可以自行访问图片链接查看:"), 
+		message.Text(resp.Data[0].URLs.Original),
+	)
 }

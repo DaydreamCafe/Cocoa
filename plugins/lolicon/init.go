@@ -24,7 +24,7 @@ func init() {
 		"涩图",
 		"色图",
 	}
-	engine.OnKeywordGroup(commandGroup, zero.OnlyGroup).SetBlock(true).Handle(
+	engine.OnPrefixGroup(commandGroup, zero.OnlyGroup).SetBlock(true).Handle(
 		control.CheckPremissionHandler(handleLoli, 5, control.EchoAny),
 	)
 }
