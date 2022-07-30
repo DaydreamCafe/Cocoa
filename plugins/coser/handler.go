@@ -81,9 +81,9 @@ func handleCoser(ctx *zero.Ctx) {
 	// 发送图片
 	rsp := ctx.CallAction("send_group_msg", zero.Params{
 		"group_id": ctx.Event.GroupID,
-		"message": imageURL,
+		"message":  imageURL,
 	}).Data.Get("message_id")
-	
+
 	if rsp.Exists() {
 		logger.Infof("发送群消息(%v): [CQ:image,file=%v] (id=%v)", ctx.Event.GroupID, imageURL, rsp.Int())
 
