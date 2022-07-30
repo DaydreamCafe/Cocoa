@@ -84,7 +84,7 @@ func handleLoli(ctx *zero.Ctx) {
 	}
 
 	// 发送图片
-	
+
 	// 处理没有该标签涩图的情况
 	if len(resp.Data) < 1 {
 		ctx.SendChain(message.Reply(ctx.Event.MessageID), message.Text("未找到指定标签的涩图"))
@@ -94,9 +94,9 @@ func handleLoli(ctx *zero.Ctx) {
 	cqcode := message.Image(resp.Data[0].URLs.Original)
 	rsp := ctx.CallAction("send_group_msg", zero.Params{
 		"group_id": ctx.Event.GroupID,
-		"message": cqcode,
+		"message":  cqcode,
 	}).Data.Get("message_id")
-	
+
 	if rsp.Exists() {
 		logger.Infof("发送群消息(%v): [CQ:image,file=%v] (id=%v)", ctx.Event.GroupID, resp.Data[0].URLs.Original, rsp.Int())
 
@@ -107,8 +107,8 @@ func handleLoli(ctx *zero.Ctx) {
 	}
 
 	ctx.SendChain(
-		message.Reply(ctx.Event.MessageID), 
-		message.Text("图片发送失败, 你可以自行访问图片链接查看:"), 
+		message.Reply(ctx.Event.MessageID),
+		message.Text("图片发送失败, 你可以自行访问图片链接查看:"),
 		message.Text(resp.Data[0].URLs.Original),
 	)
 }
