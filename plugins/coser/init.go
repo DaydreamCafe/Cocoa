@@ -20,7 +20,7 @@ func init() {
 	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理coser命令
-	engine.OnFullMatch("coser", zero.OnlyGroup).SetBlock(true).Handle(control.CheckPremissionHandler(
-		handleCoser, 5, control.EchoAny),
+	engine.OnFullMatch("coser", zero.OnlyGroup).SetBlock(true).Handle(
+		control.CheckPremissionHandler(handleCoser, 5, control.EchoAny),
 	)
 }

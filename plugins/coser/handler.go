@@ -79,9 +79,19 @@ func handleCoser(ctx *zero.Ctx) {
 	}
 
 	// 发送图片
-	messageID := ctx.SendChain(message.Image(imageURL))
+	rsp := ctx.CallAction("send_group_msg", zero.Params{
+		"group_id": ctx.Event.GroupID,
+		"message": imageURL,
+	}).Data.Get("message_id")
+	
+	if rsp.Exists() {
+		logger.Infof("发送群消息(%v): [CQ:image,file=%v] (id=%v)", ctx.Event.GroupID, imageURL, rsp.Int())
 
-	// 撤回图片
-	time.Sleep(deleteDelay * time.Second)
-	ctx.DeleteMessage(messageID)
+		// 撤回图片
+		time.Sleep(deleteDelay * time.Second)
+		ctx.DeleteMessage(message.NewMessageIDFromInteger(rsp.Int()))
+		return
+	}
+
+	ctx.SendChain(message.Text("图片发送失败"))
 }
