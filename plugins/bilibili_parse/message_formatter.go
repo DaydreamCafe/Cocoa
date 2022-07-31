@@ -28,29 +28,30 @@ type VideoInfo struct {
 
 // send 发送视频信息
 func (videoInfo VideoInfo) send(ctx *zero.Ctx) {
-	var msgBuilder strings.Builder
-	msgBuilder.WriteString(videoInfo.Title)
-	msgBuilder.WriteString("\nUP主: ")
-	msgBuilder.WriteString(videoInfo.Owner)
-	msgBuilder.WriteString("\n投稿日期: ")
-	msgBuilder.WriteString(videoInfo.Date)
-	msgBuilder.WriteString("\n点赞: ")
-	msgBuilder.WriteString(formatDigit(videoInfo.Like))
-	msgBuilder.WriteString("  播放: ")
-	msgBuilder.WriteString(formatDigit(videoInfo.View))
-	msgBuilder.WriteString("  收藏: ")
-	msgBuilder.WriteString(formatDigit(videoInfo.Favorite))
-	msgBuilder.WriteString("  硬币: ")
-	msgBuilder.WriteString(formatDigit(videoInfo.Coin))
-	msgBuilder.WriteString("  分享: ")
-	msgBuilder.WriteString(formatDigit(videoInfo.Share))
-	msgBuilder.WriteString("\n简介: ")
-	msgBuilder.WriteString(videoInfo.Desc)
-	msgBuilder.WriteRune('\n')
-	msgBuilder.WriteString(videoInfo.URL)
+	var messageBuilder strings.Builder
+	messageBuilder.WriteString(videoInfo.Title)
+	messageBuilder.WriteString("\nUP主: ")
+	messageBuilder.WriteString(videoInfo.Owner)
+	messageBuilder.WriteString("\n投稿日期: ")
+	messageBuilder.WriteString(videoInfo.Date)
+	messageBuilder.WriteString("\n点赞: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Like))
+	messageBuilder.WriteString("  播放: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.View))
+	messageBuilder.WriteString("  收藏: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Favorite))
+	messageBuilder.WriteString("  硬币: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Coin))
+	messageBuilder.WriteString("  分享: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Share))
+	messageBuilder.WriteString("\n简介: ")
+	messageBuilder.WriteString(videoInfo.Desc)
+	messageBuilder.WriteRune('\n')
+	messageBuilder.WriteString(videoInfo.URL)
 
 	ctx.SendChain(
-		message.Text(msgBuilder.String()),
+		message.Image(videoInfo.CoverURL),
+		message.Text(messageBuilder.String()),
 	)
 	logger.Infoln("已发送视频信息:", videoInfo.BVID)
 }
