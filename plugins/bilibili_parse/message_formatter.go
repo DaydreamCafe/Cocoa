@@ -44,7 +44,7 @@ func (videoInfo VideoInfo) send(ctx *zero.Ctx) {
 	messageBuilder.WriteString(formatDigit(videoInfo.Coin))
 	messageBuilder.WriteString("  分享: ")
 	messageBuilder.WriteString(formatDigit(videoInfo.Share))
-	messageBuilder.WriteString("\n简介: ")
+	messageBuilder.WriteRune('\n')
 	messageBuilder.WriteString(videoInfo.Desc)
 	messageBuilder.WriteRune('\n')
 	messageBuilder.WriteString(videoInfo.URL)
