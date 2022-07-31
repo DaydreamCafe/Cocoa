@@ -9,11 +9,11 @@ import (
 	"github.com/DaydreamCafe/Cocoa/V2/utils/control"
 )
 
-// githubRegex 链接正则表达式
-const githubRegex = `github\.com\/([^(\s|\/)]+\/[^(\s|\/)]+)`
+// GithubRegex 链接正则表达式
+const GithubRegex = `github\.com\/([^(\s|\/)]+\/[^(\s|\/)]+)`
 
 // compiledGithubRegex 编译后的链接正则表达式
-var compiledGithubRegex = regexp.MustCompile(githubRegex)
+var compiledGithubRegex = regexp.MustCompile(GithubRegex)
 
 func init() {
 	// 设置插件信息
@@ -29,7 +29,7 @@ func init() {
 	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理github仓库链接
-	engine.OnRegex(githubRegex, zero.OnlyGroup).Handle(
+	engine.OnRegex(GithubRegex, zero.OnlyGroup).Handle(
 		control.CheckPremissionHandler(handleGithubLink, 5, control.OnlyEchoError),
 	)
 }
