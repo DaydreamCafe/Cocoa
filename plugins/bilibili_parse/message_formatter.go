@@ -13,6 +13,7 @@ import (
 type VideoInfo struct {
 	Title    string
 	CoverURL string
+	Date     string
 	Owner    string
 	Like     int
 	View     int
@@ -29,7 +30,8 @@ func (videoInfo VideoInfo) send(ctx *zero.Ctx) {
 	ctx.SendChain(
 		message.Image(videoInfo.CoverURL),
 		message.Text(videoInfo.Title+"\n"),
-		message.Text(videoInfo.Owner+"\n"),
+		message.Text("UP主: "+videoInfo.Owner+"\n"),
+		message.Text("投稿日期: "+videoInfo.Date+"\n"),
 		message.Text(
 			fmt.Sprint(
 				fmt.Sprint("点赞: ", formatDigit(videoInfo.Like), "  "),
@@ -39,7 +41,7 @@ func (videoInfo VideoInfo) send(ctx *zero.Ctx) {
 				fmt.Sprint("分享: ", formatDigit(videoInfo.Share), "\n"),
 			),
 		),
-		message.Text(videoInfo.Desc+"\n"),
+		message.Text("简介: "+videoInfo.Desc+"\n"),
 		message.Text(videoInfo.URL),
 	)
 	logger.Infoln("已发送视频信息:", videoInfo.BVID)
