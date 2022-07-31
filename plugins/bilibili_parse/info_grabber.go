@@ -25,7 +25,7 @@ type APIStruct struct {
 		Avid     int    `json:"aid"`
 		Title    string `json:"title"`
 		CoverURL string `json:"pic"`
-		Pubdate  int64  `json:"pubdate"`
+		PubDate  int64  `json:"pubdate"`
 		Desc     string `json:"desc"`
 		Stat     struct {
 			View     int `json:"view"`
@@ -57,7 +57,7 @@ func getVideoInfo(vid string) (VideoInfo, error) {
 	videoInfo.Title = APIInfo.Data.Title
 	videoInfo.Owner = APIInfo.Data.Owner.Name
 	videoInfo.CoverURL = APIInfo.Data.CoverURL
-	videoInfo.Date = time.Unix(APIInfo.Data.Pubdate, 0).Format("2006-01-02 15:04:05")
+	videoInfo.Date = time.Unix(APIInfo.Data.PubDate, 0).Format("2006-01-02 15:04:05")
 	videoInfo.Like = APIInfo.Data.Stat.Like
 	videoInfo.View = APIInfo.Data.Stat.View
 	videoInfo.Favorite = APIInfo.Data.Stat.Favorite
