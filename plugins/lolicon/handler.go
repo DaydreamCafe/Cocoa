@@ -46,9 +46,9 @@ func handleLoli(ctx *zero.Ctx) {
 	var reqURL string = apiURL
 
 	// 解析tag
-	msg := ctx.Event.Message.String()
+	msg := ctx.ExtractPlainText()
 	var tagGroup []string
-	if len(msg) > 6 {
+	if len(msg) > 6 && msg[6:7] == " " {
 		tags := ctx.Event.Message.String()[7:]
 		tagGroup = strings.Split(tags, "&amp;")
 
@@ -65,7 +65,6 @@ func handleLoli(ctx *zero.Ctx) {
 		}
 		reqURL = reqURLBuilder.String()
 	}
-	logger.Debugln(reqURL)
 
 	//从API获取图片地址
 	response, err := http.Get(reqURL)
