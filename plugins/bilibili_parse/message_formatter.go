@@ -3,6 +3,7 @@ package bilibiliparse
 
 import (
 	"fmt"
+	"strings"
 
 	logger "github.com/sirupsen/logrus"
 	zero "github.com/wdvxdr1123/ZeroBot"
@@ -13,6 +14,7 @@ import (
 type VideoInfo struct {
 	Title    string
 	CoverURL string
+	Date     string
 	Owner    string
 	Like     int
 	View     int
@@ -26,21 +28,30 @@ type VideoInfo struct {
 
 // send 发送视频信息
 func (videoInfo VideoInfo) send(ctx *zero.Ctx) {
+	var messageBuilder strings.Builder
+	messageBuilder.WriteString(videoInfo.Title)
+	messageBuilder.WriteString("\nUP主: ")
+	messageBuilder.WriteString(videoInfo.Owner)
+	messageBuilder.WriteString("\n投稿日期: ")
+	messageBuilder.WriteString(videoInfo.Date)
+	messageBuilder.WriteString("\n点赞: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Like))
+	messageBuilder.WriteString("  播放: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.View))
+	messageBuilder.WriteString("  收藏: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Favorite))
+	messageBuilder.WriteString("  硬币: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Coin))
+	messageBuilder.WriteString("  分享: ")
+	messageBuilder.WriteString(formatDigit(videoInfo.Share))
+	messageBuilder.WriteRune('\n')
+	messageBuilder.WriteString(videoInfo.Desc)
+	messageBuilder.WriteRune('\n')
+	messageBuilder.WriteString(videoInfo.URL)
+
 	ctx.SendChain(
 		message.Image(videoInfo.CoverURL),
-		message.Text(videoInfo.Title+"\n"),
-		message.Text(videoInfo.Owner+"\n"),
-		message.Text(
-			fmt.Sprint(
-				fmt.Sprint("点赞: ", formatDigit(videoInfo.Like), "  "),
-				fmt.Sprint("播放: ", formatDigit(videoInfo.View), "  "),
-				fmt.Sprint("收藏: ", formatDigit(videoInfo.Favorite), "  "),
-				fmt.Sprint("硬币: ", formatDigit(videoInfo.Coin), "  "),
-				fmt.Sprint("分享: ", formatDigit(videoInfo.Share), "\n"),
-			),
-		),
-		message.Text(videoInfo.Desc+"\n"),
-		message.Text(videoInfo.URL),
+		message.Text(messageBuilder.String()),
 	)
 	logger.Infoln("已发送视频信息:", videoInfo.BVID)
 }
