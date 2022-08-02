@@ -81,6 +81,10 @@ func handleUser(ctx *zero.Ctx) {
 
 	// 处理set命令
 	if set > 0 {
+		if ctx.Event.UserID == user {
+			ctx.SendChain(message.Text("你不能设置自己的权限等级"))
+			return
+		}
 		if control.CheckPremission(ctx.Event.UserID, 9) {
 			err := setPermissionLevel(user, set)
 			if err != nil {
@@ -97,6 +101,10 @@ func handleUser(ctx *zero.Ctx) {
 
 	// 处理unban命令
 	if pardon {
+		if ctx.Event.UserID == user {
+			ctx.SendChain(message.Text("你不能解除封禁自己"))
+			return
+		}
 		if control.CheckPremission(ctx.Event.UserID, 9) {
 			err := pardonUser(user)
 			if err != nil {
@@ -112,6 +120,10 @@ func handleUser(ctx *zero.Ctx) {
 
 	// 处理reset命令
 	if reset {
+		if ctx.Event.UserID == user {
+			ctx.SendChain(message.Text("你不能重置自己的权限等级"))
+			return
+		}
 		if control.CheckPremission(ctx.Event.UserID, 9) {
 			err := resetUser(user)
 			if err != nil {
@@ -126,6 +138,10 @@ func handleUser(ctx *zero.Ctx) {
 	}
 
 	// 处理ban命令
+	if ctx.Event.UserID == user {
+		ctx.SendChain(message.Text("你不能封禁自己"))
+		return
+	}
 	if control.CheckPremission(ctx.Event.UserID, 9) {
 		err := banUser(user, ban)
 		if err != nil {
