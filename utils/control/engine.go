@@ -8,8 +8,11 @@ func getEngine(pluginMetadata Metadata, echoLevel EchoLevel) zero.Engine {
 	engine := zero.Engine{}
 
 	// 添加prehandler
+	// 添加忽略账号prehandler
+	engine.UsePreHandler(ignoreUserChecker)
+
 	// 插件prehandler
-	engine.UsePreHandler(pluginCheck(pluginMetadata, echoLevel))
+	engine.UsePreHandler(pluginChecker(pluginMetadata, echoLevel))
 
 	// 返回engine
 	return engine

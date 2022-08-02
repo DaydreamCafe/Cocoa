@@ -14,6 +14,7 @@ type Config struct {
 	CommandPrefix string   `yaml:"CommandPrefix"`
 	NickNames     []string `yaml:"NickNames"`
 	DefaultLevel  int64    `yaml:"DefaultLevel"`
+	IgnoreUsers   []int64  `yaml:"IgnoreUsers"`
 
 	Server struct {
 		Address string `yaml:"Address"`

@@ -11,12 +11,30 @@ import (
 	"github.com/wdvxdr1123/ZeroBot/message"
 	"gorm.io/gorm"
 
+	"github.com/DaydreamCafe/Cocoa/V2/src/config"
 	"github.com/DaydreamCafe/Cocoa/V2/src/conn"
 	"github.com/DaydreamCafe/Cocoa/V2/src/model"
 )
 
+// 通用全局忽略账号prehandler, 用于确认账号是否被设置为忽略
+func ignoreUserChecker(ctx *zero.Ctx) bool {
+	// 加载配置文件
+	cfg := config.Config{}
+	cfg.Load()
+
+	// 检查该账号是否被忽略
+	flag := true
+	for _, userID := range(cfg.IgnoreUsers) {
+		if userID == ctx.Event.UserID {
+			flag = false
+		}
+	}
+
+	return flag
+}
+
 // 通用的全局插件prehandler, 用于确认插件是否处于可用状态
-func pluginCheck(pluginMetadata Metadata, echoLevel EchoLevel) zero.Rule {
+func pluginChecker(pluginMetadata Metadata, echoLevel EchoLevel) zero.Rule {
 	return func(ctx *zero.Ctx) bool {
 		// 连接数据库
 		db, err := conn.GetDB()
