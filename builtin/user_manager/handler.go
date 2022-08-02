@@ -133,6 +133,7 @@ func handleUser(ctx *zero.Ctx) {
 			return
 		}
 		ctx.SendChain(message.Text(fmt.Sprintf("用户%d已被封禁", user)))
+		return
 	}
 	ctx.SendChain(message.Text("你没有权限执行这条指令"))
 }
@@ -234,44 +235,18 @@ func banUser(QID int64, targetTime int64) error {
 	// 当有记录时, 查询是否有该用户的记录
 	if count > 0 {
 		err = db.Where("qid = ?", QID).First(&userPermission).Error
-		if err != nil {
+		if err != nil && err != gorm.ErrRecordNotFound {
 			logger.Errorln("封禁用户失败: ", err)
 			return errors.New("指令执行失败: 查询数据库失败")
 		}
-		if userPermission.IfSU {
+
+		// 查询是否为超级用户
+		if err != gorm.ErrRecordNotFound && userPermission.IfSU {
 			return errors.New("指令执行失败: 您不能封禁超级用户")
 		}
 	}
 
-	// 查询表中是否有记录
-	err = db.Model(&model.UserPremissionModel{}).Count(&count).Error
-	if err != nil {
-		logger.Errorln("封禁用户失败: ", err)
-		return errors.New("指令执行失败: 查询数据库失败")
-	}
-
-	// 如果没有记录, 则创建一条记录
-	if count == 0 {
-		nowTime := time.Now().Unix()
-		var unbanTimeStamp int64
-		if targetTime == -1 {
-			unbanTimeStamp = -1
-		} else {
-			unbanTimeStamp = nowTime + targetTime
-		}
-		err = db.Create(&model.BanedUserModel{
-			QID:            QID,
-			BanTimeStamp:   nowTime,
-			UnbanTimeStamp: unbanTimeStamp,
-		}).Error
-		if err != nil {
-			logger.Errorln("封禁用户失败: ", err)
-			return errors.New("指令执行失败: 更新数据库失败")
-		}
-		return nil
-	}
-
-	// 如果有记录, 则查询是否有该用户的记录
+	// 查询封禁表中是否有记录
 	var user model.BanedUserModel
 	err = db.Where("qid = ?", QID).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
@@ -341,20 +316,22 @@ func pardonUser(QID int64) error {
 		logger.Errorln("解封用户失败: ", err)
 		return errors.New("指令执行失败: 查询数据库失败")
 	}
+
 	// 当有记录时, 查询是否有该用户的记录
 	if count > 0 {
 		err = db.Where("qid = ?", QID).First(&userPermission).Error
-		if err != nil {
+		if err != nil && err != gorm.ErrRecordNotFound {
 			logger.Errorln("解封用户失败: ", err)
 			return errors.New("指令执行失败: 查询数据库失败")
 		}
-		if userPermission.IfSU {
+		if err != gorm.ErrRecordNotFound && userPermission.IfSU {
 			return errors.New("指令执行失败: 您不能解封超级用户")
 		}
 	}
 
-	// 查询表中是否有记录
-	err = db.Model(&model.BanedUserModel{}).Count(&count).Error
+	// 查询封禁表中是否有记录
+	var user model.BanedUserModel
+	err = db.Model(&user).Count(&count).Error
 	if err != nil {
 		logger.Errorln("解封用户失败: ", err)
 		return errors.New("指令执行失败: 查询数据库失败")
@@ -366,7 +343,6 @@ func pardonUser(QID int64) error {
 	}
 
 	// 如果有记录, 则查询是否有该用户的记录
-	var user model.BanedUserModel
 	err = db.Where("qid = ?", QID).First(&user).Error
 	if err != nil && err != gorm.ErrRecordNotFound {
 		logger.Errorln("解封用户失败: ", err)
