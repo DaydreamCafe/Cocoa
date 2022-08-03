@@ -63,6 +63,7 @@ func handleLiveSearch(ctx *zero.Ctx) {
 
 	// 从API获取直播用户信息，并解析为结构体
 	var respInfos_USER = make([]BiliLiveSearchAPIResp, len(reqURLs))
+	var respInfos_ROOM = make([]BiliLiveSearchAPIResp, len(reqURLs))
 	for index, reqURL := range reqURLs {
 		// 调用API获取信息
 		response, err := http.Get(reqURL)
@@ -99,8 +100,7 @@ func handleLiveSearch(ctx *zero.Ctx) {
 			reqURLs[index] = reqURLBuilder.String()
 		}
 
-		// 从API获取直播间信息，并解析为结构体
-		var respInfos_ROOM = make([]BiliLiveSearchAPIResp, len(reqURLs))
+		// 从API获取直播间信息，并解析为结构体\
 		for index, reqURL := range reqURLs {
 			// 调用API获取信息
 			response, err := http.Get(reqURL)
@@ -129,7 +129,7 @@ func handleLiveSearch(ctx *zero.Ctx) {
 
 	// 格式化回复字符串及封面图
 	var replyStr = make([]string, len(respInfos_USER))
-	var coverLst = make([]string, len(respInfos_USER))
+	var coverLst = make([]string, len(respInfos_ROOM))
 	for index, respInfo := range respInfos_USER {
 		// 格式化字符串
 		var replyBuilder strings.Builder
