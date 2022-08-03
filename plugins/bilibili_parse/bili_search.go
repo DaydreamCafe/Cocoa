@@ -27,7 +27,7 @@ type BiliLiveSearchAPIResp struct {
 		Result struct {
 			LiveRoom []struct {
 				Title    string `json:"title"`
-				CoverURL string `json:"cover"`
+				CoverURL string `json:"user_cover"`
 				Watched  struct {
 					Num int `json:"num"`
 				} `json:"watched_show"`
