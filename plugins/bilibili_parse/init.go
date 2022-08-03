@@ -14,8 +14,6 @@ const (
 	VIDRegex = `((av|AV)\d+|(bv|BV)1(\d|\w){2}4(\d|\w)1(\d|\w)7(\d|\w){2})`
 	// ShortLinkRegex 短链接正则表达式
 	ShortLinkRegex = `(https:\/\/)?b23.tv\/\S{7}`
-	// LiveSearchRegex 直播间搜索正则表达式
-	LiveSearchRegex = `^bililive ((\S+)(&(\S+))?)+`
 )
 
 var (
@@ -23,8 +21,6 @@ var (
 	compiledVIDRegex *regexp.Regexp = regexp.MustCompile(VIDRegex)
 	// compiledShortLinkRegex 编译后的短链接正则表达式
 	compiledShortLinkRegex *regexp.Regexp = regexp.MustCompile(ShortLinkRegex)
-	// compiledLiveSearchRegex 编译后的直播间搜索正则表达式
-	compiledLiveSearchRegex *regexp.Regexp = regexp.MustCompile(LiveSearchRegex)
 )
 
 func init() {
@@ -34,8 +30,7 @@ func init() {
 		Version:     "1.0.0",
 		Description: "Bilibili视频解析插件",
 		Author:      "WhitePaper233/jiangnan777312",
-		Usage: `-发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息
-				-提供直播间搜索功能`,
+		Usage:       `-发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息`,
 	}
 	// 初始化插件
 	engine := control.Registe(&metadata, control.EchoAny)
@@ -48,10 +43,5 @@ func init() {
 	// 匹配短链接和卡片信息
 	engine.OnRegex(ShortLinkRegex, zero.OnlyGroup).Handle(
 		control.CheckPremissionHandler(handleShortLink, 5, control.OnlyEchoError),
-	)
-
-	// 处理直播间搜索
-	engine.OnRegex(LiveSearchRegex, zero.OnlyGroup).Handle(
-		control.CheckPremissionHandler(handleLiveSearch, 5, control.OnlyEchoError),
 	)
 }

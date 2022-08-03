@@ -1,5 +1,5 @@
-// Package bilibiliparse B站分享解析
-package bilibiliparse
+// Package bilibilisearch B站综合搜索
+package bilibilisearch
 
 import (
 	"encoding/json"
@@ -14,6 +14,8 @@ import (
 )
 
 const (
+	// UA User-Agent
+	UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/80.0.3987.132 Safari/537.36"
 	// BiliSearchAPI API地址
 	BiliSearchAPI = "https://api.bilibili.com/x/web-interface/search/type?page=%s&search_type=%s&keyword="
 	// Bilibili直播间 直播间地址
@@ -66,10 +68,16 @@ func handleLiveSearch(ctx *zero.Ctx) {
 	var respInfos_ROOM = make([]BiliLiveSearchAPIResp, len(reqURLs))
 	for index, reqURL := range reqURLs {
 		// 调用API获取信息
-		response, err := http.Get(reqURL)
+		request, err := http.NewRequest("GET", reqURL, nil)
+		if err != nil {
+			logger.Errorln("创建请求失败:", err)
+			return
+		}
+		request.Header.Set("User-Agent", UA)
+		response, err := http.DefaultClient.Do(request)
 		if err != nil {
 			logger.Errorln("请求失败:", err)
-			continue
+			return
 		}
 		defer response.Body.Close()
 
@@ -100,16 +108,21 @@ func handleLiveSearch(ctx *zero.Ctx) {
 			reqURLs[index] = reqURLBuilder.String()
 		}
 
-		// 从API获取直播间信息，并解析为结构体\
+		// 从API获取直播间信息，并解析为结构体
 		for index, reqURL := range reqURLs {
 			// 调用API获取信息
-			response, err := http.Get(reqURL)
+			request, err := http.NewRequest("GET", reqURL, nil)
+			if err != nil {
+				logger.Errorln("创建请求失败:", err)
+				return
+			}
+			request.Header.Set("User-Agent", UA)
+			response, err := http.DefaultClient.Do(request)
 			if err != nil {
 				logger.Errorln("请求失败:", err)
-				continue
+				return
 			}
 			defer response.Body.Close()
-
 			// 将请求结果JSON解析为BiliLiveAPIResp结构体
 			var respInfo_ROOM BiliLiveSearchAPIResp
 			err = json.NewDecoder(response.Body).Decode(&respInfo_ROOM)
