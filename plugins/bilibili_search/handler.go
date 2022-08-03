@@ -4,6 +4,7 @@ package bilibilisearch
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
@@ -82,6 +83,12 @@ func handleLiveSearch(ctx *zero.Ctx) {
 		defer response.Body.Close()
 
 		// 将请求结果JSON解析为BiliLiveAPIResp结构体
+		respdata, err := ioutil.ReadAll(response.Body)
+		if err != nil {
+			logger.Errorln(err)
+		}
+		logger.Infoln("API返回结果: ", string(respdata))
+
 		var respInfo_USER BiliLiveSearchAPIResp
 		err = json.NewDecoder(response.Body).Decode(&respInfo_USER)
 		if err != nil {
@@ -123,7 +130,14 @@ func handleLiveSearch(ctx *zero.Ctx) {
 				return
 			}
 			defer response.Body.Close()
+
 			// 将请求结果JSON解析为BiliLiveAPIResp结构体
+			respdata, err := ioutil.ReadAll(response.Body)
+			if err != nil {
+				logger.Errorln(err)
+			}
+			logger.Infoln("API返回结果: ", string(respdata))
+
 			var respInfo_ROOM BiliLiveSearchAPIResp
 			err = json.NewDecoder(response.Body).Decode(&respInfo_ROOM)
 			if err != nil {
