@@ -15,7 +15,7 @@ const (
 	// ShortLinkRegex 短链接正则表达式
 	ShortLinkRegex = `(https:\/\/)?b23.tv\/\S{7}`
 	// LiveSearchRegex 直播间搜索正则表达式
-	LiveSearchRegex = `^bililive ((\S+)&(\S+))+`
+	LiveSearchRegex = `^bililive ((\S+)(&(\S+))?)+`
 )
 
 var (
