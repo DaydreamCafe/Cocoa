@@ -46,8 +46,9 @@ func handleLiveSearch(ctx *zero.Ctx) {
 	LiveSearchAPI := fmt.Sprintf(BiliSearchAPI, "1", "live")
 	// 处理搜索参数
 	raw_cmd := compiledLiveSearchRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
-	cmd_str := string([]byte(raw_cmd[0][0])[8:]) // 截去命令前缀"bililive "
+	cmd_str := string([]byte(raw_cmd[0][0])[9:]) // 截去命令前缀"bililive "
 	args := strings.Split(cmd_str, "&")
+	logger.Debugln("获取到直播间关键字：", args)
 	var reqURLs = make([]string, len(args))
 	for index, arg := range args {
 		var reqURLBuilder strings.Builder
