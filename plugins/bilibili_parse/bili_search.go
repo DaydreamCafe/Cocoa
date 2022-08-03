@@ -26,28 +26,31 @@ type BiliLiveSearchAPIResp struct {
 	Data struct {
 		Result struct {
 			LiveRoom []struct {
-				IsOnline bool   `json:"is_live_room_online"`
-				RoomID   int    `json:"room_id"`
 				Title    string `json:"title"`
-				UID      int    `json:"uid"`
-				UserName string `json:"uname"`
 				CoverURL string `json:"cover"`
 				Watched  struct {
 					Num int `json:"num"`
 				} `json:"watched_show"`
 			} `json:"live_room"`
+			LiveUser []struct {
+				IsLive   bool   `json:"is_live"`
+				LiveTime string `json:"live_time"`
+				RoomID   int    `json:"roomid"`
+				UserFace string `json:"uface"`
+				UserName string `json:"uname"`
+			} `json:"live_user"`
 		} `json:"result"`
 	} `json:"data"`
 }
 
 // LiveSearch 直播间搜索
 func handleLiveSearch(ctx *zero.Ctx) {
-	// 默认API参数
-	LiveSearchAPI := fmt.Sprintf(BiliSearchAPI, "1", "live")
+	// API参数->搜索直播用户
+	LiveSearchAPI := fmt.Sprintf(BiliSearchAPI, "1", "live_user")
 	// 处理搜索参数
 	raw_cmd := compiledLiveSearchRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
 	cmd_str := string([]byte(raw_cmd[0][0])[9:]) // 截去命令前缀"bililive "
-	args := strings.Split(cmd_str, "&")
+	args := strings.Split(cmd_str, "&amp;")
 	logger.Debugln("获取到直播间关键字：", args)
 	var reqURLs = make([]string, len(args))
 	for index, arg := range args {
@@ -58,8 +61,8 @@ func handleLiveSearch(ctx *zero.Ctx) {
 		reqURLs[index] = reqURLBuilder.String()
 	}
 
-	// 从API获取直播间信息，并解析为结构体
-	var respInfos = make([]BiliLiveSearchAPIResp, len(reqURLs))
+	// 从API获取直播用户信息，并解析为结构体
+	var respInfos_USER = make([]BiliLiveSearchAPIResp, len(reqURLs))
 	for index, reqURL := range reqURLs {
 		// 调用API获取信息
 		response, err := http.Get(reqURL)
@@ -70,43 +73,83 @@ func handleLiveSearch(ctx *zero.Ctx) {
 		defer response.Body.Close()
 
 		// 将请求结果JSON解析为BiliLiveAPIResp结构体
-		var respInfo BiliLiveSearchAPIResp
-		err = json.NewDecoder(response.Body).Decode(&respInfo)
+		var respInfo_USER BiliLiveSearchAPIResp
+		err = json.NewDecoder(response.Body).Decode(&respInfo_USER)
 		if err != nil {
 			logger.Errorln("JSON解析失败:", err)
 			continue
 		}
 
 		// 请求失败则跳过
-		if respInfo.Code == 0 {
+		if respInfo_USER.Code != 0 {
 			continue
 		}
 
-		respInfos[index] = respInfo
+		respInfos_USER[index] = respInfo_USER
+
+		// API参数->搜索直播间
+		LiveSearchAPI = fmt.Sprintf(BiliSearchAPI, "1", "live_room")
+
+		// 依照RoomID重新构建reqURLs
+		for index := range args {
+			var reqURLBuilder strings.Builder
+
+			reqURLBuilder.WriteString(LiveSearchAPI)
+			reqURLBuilder.WriteString(formatDigit(respInfo_USER.Data.Result.LiveUser[0].RoomID))
+			reqURLs[index] = reqURLBuilder.String()
+		}
+
+		// 从API获取直播间信息，并解析为结构体
+		var respInfos_ROOM = make([]BiliLiveSearchAPIResp, len(reqURLs))
+		for index, reqURL := range reqURLs {
+			// 调用API获取信息
+			response, err := http.Get(reqURL)
+			if err != nil {
+				logger.Errorln("请求失败:", err)
+				continue
+			}
+			defer response.Body.Close()
+
+			// 将请求结果JSON解析为BiliLiveAPIResp结构体
+			var respInfo_ROOM BiliLiveSearchAPIResp
+			err = json.NewDecoder(response.Body).Decode(&respInfo_ROOM)
+			if err != nil {
+				logger.Errorln("JSON解析失败:", err)
+				continue
+			}
+
+			// 请求失败则跳过
+			if respInfo_ROOM.Code != 0 {
+				continue
+			}
+
+			respInfos_ROOM[index] = respInfo_ROOM
+		}
 	}
 
 	// 格式化回复字符串及封面图
-	var replyStr = make([]string, len(respInfos))
-	var coverLst = make([]string, len(respInfos))
-	for index, respInfo := range respInfos {
+	var replyStr = make([]string, len(respInfos_USER))
+	var coverLst = make([]string, len(respInfos_USER))
+	for index, respInfo := range respInfos_USER {
 		// 格式化字符串
 		var replyBuilder strings.Builder
 
+		replyBuilder.WriteString("\n主播: ")
+		replyBuilder.WriteString(respInfo.Data.Result.LiveUser[0].UserName)
+		if respInfo.Data.Result.LiveUser[0].IsLive {
+			replyBuilder.WriteString("【直播中】\n")
+		} else {
+			replyBuilder.WriteString("【未开播】\n")
+			continue
+		}
 		replyBuilder.WriteRune('\n')
 		replyBuilder.WriteString(respInfo.Data.Result.LiveRoom[0].Title)
-		replyBuilder.WriteString("\n主播: ")
-		replyBuilder.WriteString(respInfo.Data.Result.LiveRoom[0].UserName)
 		replyBuilder.WriteRune('\n')
 		replyBuilder.WriteString("--------------------\n")
 		replyBuilder.WriteString(strconv.FormatUint(uint64(respInfo.Data.Result.LiveRoom[0].Watched.Num), 10))
 		replyBuilder.WriteString("人观看过\n")
-		if respInfo.Data.Result.LiveRoom[0].IsOnline {
-			replyBuilder.WriteString("【直播中】\n")
-		} else {
-			replyBuilder.WriteString("【未开播】\n")
-		}
 		replyBuilder.WriteString(BiliLiveURL)
-		replyBuilder.WriteString(formatDigit(respInfo.Data.Result.LiveRoom[0].RoomID))
+		replyBuilder.WriteString(formatDigit(respInfo.Data.Result.LiveUser[0].RoomID))
 
 		replyStr[index] = replyBuilder.String()
 		//格式化封面图URL
