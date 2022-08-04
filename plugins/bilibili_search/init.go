@@ -26,7 +26,7 @@ func init() {
 		Version:     "1.0.0",
 		Description: "Bilibili综合搜索插件",
 		Author:      "jiangnan777312",
-		Usage: `支持以下B站搜索功能: 
+		Usage: `-支持以下B站搜索功能: 
 				-直播间搜索`,
 	}
 	// 初始化插件
