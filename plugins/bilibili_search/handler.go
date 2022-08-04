@@ -152,13 +152,13 @@ func handleLiveSearch(ctx *zero.Ctx) {
 	// 格式化回复字符串及封面图
 	var replyStr = make([]string, len(respInfos_USER))
 	var coverLst = make([]string, len(respInfos_ROOM))
-	for index, respInfo := range respInfos_ROOM {
+	for index, roomInfo := range respInfos_ROOM {
 		userInfo := respInfos_USER[index]
 		// 格式化字符串
 		var replyBuilder strings.Builder
 
 		replyBuilder.WriteString("\n主播: ")
-		replyBuilder.WriteString(respInfo.Data.Result.LiveRoom[0].UserName)
+		replyBuilder.WriteString(roomInfo.Data.Result.LiveRoom[0].UserName)
 		if userInfo.Data.Result[0].IsLive {
 			replyBuilder.WriteString("【直播中】\n")
 		} else {
@@ -166,17 +166,17 @@ func handleLiveSearch(ctx *zero.Ctx) {
 			continue
 		}
 		replyBuilder.WriteRune('\n')
-		replyBuilder.WriteString(respInfo.Data.Result.LiveRoom[0].Title)
+		replyBuilder.WriteString(roomInfo.Data.Result.LiveRoom[0].Title)
 		replyBuilder.WriteRune('\n')
 		replyBuilder.WriteString("--------------------\n")
-		replyBuilder.WriteString(strconv.FormatUint(uint64(respInfo.Data.Result.LiveRoom[0].Watched.Num), 10))
+		replyBuilder.WriteString(strconv.FormatUint(uint64(roomInfo.Data.Result.LiveRoom[0].Watched.Num), 10))
 		replyBuilder.WriteString("人观看过\n")
 		replyBuilder.WriteString(BiliLiveURL)
 		replyBuilder.WriteString(formatDigit(userInfo.Data.Result[0].RoomID))
 
 		replyStr[index] = replyBuilder.String()
 		//格式化封面图URL
-		coverLst[index] = respInfo.Data.Result.LiveRoom[0].UserCover
+		coverLst[index] = roomInfo.Data.Result.LiveRoom[0].UserCover
 	}
 
 	// 发送信息
