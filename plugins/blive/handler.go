@@ -50,8 +50,8 @@ func handleBlive(ctx *zero.Ctx) {
 	// 请求API
 	response, err := http.Get(fmt.Sprintf(BiliSearchAPI, targetKeyword))
 	if err != nil {
-		logger.Errorln("查询直播用户错误:", err)
-		ctx.SendChain(message.Text("查询直播用户错误"))
+		logger.Errorln("查询播主错误:", err)
+		ctx.SendChain(message.Text("查询播主错误"))
 		return
 	}
 
@@ -60,15 +60,15 @@ func handleBlive(ctx *zero.Ctx) {
 	err = json.NewDecoder(response.Body).Decode(&userResp)
 	if err != nil {
 		logger.Errorln("解析json错误:", err)
-		ctx.SendChain(message.Text("查询直播用户错误"))
+		ctx.SendChain(message.Text("查询播主错误"))
 		return
 	}
 
 	defer response.Body.Close()
 
 	if len(userResp.Data.Result.LiveUser) == 0 {
-		logger.Debugln("未查询到用户:", targetKeyword)
-		ctx.SendChain(message.Text("未查询到用户:", targetKeyword))
+		logger.Debugln("未查询到播主:", targetKeyword)
+		ctx.SendChain(message.Text("未查询到播主:", targetKeyword))
 		return
 	}
 
@@ -92,7 +92,7 @@ func handleBlive(ctx *zero.Ctx) {
 	defer response.Body.Close()
 
 	if len(roomResp.Data.Result.LiveRoom) == 0 {
-		logger.Debugln("未查询到用户直播间:", strconv.FormatUint(uint64(userResp.Data.Result.LiveUser[0].RoomID), 10))
+		logger.Debugln("未查询到播主直播间:", strconv.FormatUint(uint64(userResp.Data.Result.LiveUser[0].RoomID), 10))
 	}
 
 	// 格式化回复信息
