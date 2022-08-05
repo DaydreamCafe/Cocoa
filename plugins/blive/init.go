@@ -1,5 +1,5 @@
-// Package bilibilisearch B站综合搜索
-package bilibilisearch
+// package blive B站直播搜索
+package blive
 
 import (
 	"fmt"
@@ -10,31 +10,30 @@ import (
 )
 
 const (
-	// LiveSearchRegex 直播间搜索正则表达式
-	LiveSearchRegex = `^bililive ((\S+)(&(\S+))?)+`
+	// CommandRegex 直播间搜索正则表达式
+	CommandRegex = `^blive \S+`
 )
 
 var (
-	// compiledLiveSearchRegex 编译后的直播间搜索正则表达式
-	compiledLiveSearchRegex *regexp.Regexp = regexp.MustCompile(LiveSearchRegex)
+	// compiledCommandRegex 编译后的直播间搜索正则表达式
+	compiledCommandRegex *regexp.Regexp = regexp.MustCompile(CommandRegex)
 )
 
 func init() {
 	// 设置插件信息
 	metadata := control.Metadata{
-		Name:        "bilibili_search",
+		Name:        "blive",
 		Version:     "1.0.0",
-		Description: "Bilibili综合搜索插件",
-		Author:      "jiangnan777312",
-		Usage: `-支持以下B站搜索功能: 
-				-直播间搜索`,
+		Description: "Bilibili直播搜索",
+		Author:      "jiangnan777312 / WhitePaper233",
+		Usage:       `-提供B站直播搜索`,
 	}
 	// 初始化插件
 	engine := control.Registe(&metadata, control.EchoAny)
 
 	// 处理直播间搜索
-	engine.OnRegex(LiveSearchRegex, zero.OnlyGroup).Handle(
-		control.CheckPremissionHandler(handleLiveSearch, 5, control.OnlyEchoError),
+	engine.OnRegex(CommandRegex, zero.OnlyGroup).Handle(
+		control.CheckPremissionHandler(handleBlive, 5, control.OnlyEchoError),
 	)
 }
 
