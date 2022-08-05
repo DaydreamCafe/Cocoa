@@ -20,6 +20,7 @@ import (
 
 	// normal priority
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/bilibili_parse"
+	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/blive"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/char_reverser"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/coser"
 	_ "github.com/DaydreamCafe/Cocoa/V2/plugins/github_parse"

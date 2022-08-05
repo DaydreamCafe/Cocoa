@@ -30,7 +30,7 @@ func init() {
 		Version:     "1.0.0",
 		Description: "Bilibili视频解析插件",
 		Author:      "WhitePaper233",
-		Usage:       "发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息",
+		Usage:       `-发送任意形式的B站分享链接、番号及移动端分享卡片, 将自动解析出视频信息`,
 	}
 	// 初始化插件
 	engine := control.Registe(&metadata, control.EchoAny)
