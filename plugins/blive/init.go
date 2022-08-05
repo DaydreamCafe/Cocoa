@@ -1,4 +1,4 @@
-// package blive B站直播搜索
+// Package blive B站直播搜索
 package blive
 
 import (
