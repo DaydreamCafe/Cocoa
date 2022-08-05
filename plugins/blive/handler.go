@@ -1,4 +1,4 @@
-// package blive B站直播搜索
+// Package blive B站直播搜索
 package blive
 
 import (
@@ -14,8 +14,9 @@ import (
 )
 
 const (
+	// BiliSearchAPI API地址
 	BiliSearchAPI = "https://api.bilibili.com/x/web-interface/search/type?page=1&search_type=live&keyword=%s"
-	// Bilibili直播间 直播间地址
+	// BiliLiveURL 直播间地址
 	BiliLiveURL = "https://live.bilibili.com/"
 )
 
@@ -44,8 +45,8 @@ type searchResp struct {
 
 func handleBlive(ctx *zero.Ctx) {
 	// 解析命令参数
-	raw_cmd := compiledCommandRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
-	targetKeyword := string([]byte(raw_cmd[0][0])[6:]) // 截去命令前缀"bililive "
+	rawCmd := compiledCommandRegex.FindAllStringSubmatch(ctx.MessageString(), -1)
+	targetKeyword := string([]byte(rawCmd[0][0])[6:]) // 截去命令前缀"bililive "
 	// 请求API
 	response, err := http.Get(fmt.Sprintf(BiliSearchAPI, targetKeyword))
 	if err != nil {
