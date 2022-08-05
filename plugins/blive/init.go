@@ -2,7 +2,6 @@
 package blive
 
 import (
-	"fmt"
 	"regexp"
 
 	"github.com/DaydreamCafe/Cocoa/V2/utils/control"
@@ -35,16 +34,4 @@ func init() {
 	engine.OnRegex(CommandRegex, zero.OnlyGroup).Handle(
 		control.CheckPremissionHandler(handleBlive, 5, control.OnlyEchoError),
 	)
-}
-
-// 格式化数字
-func formatDigit(digit int) string {
-	// 当数字大于9999时, 显示为"x.x万"
-	// 当数字大于99999999时, 显示为"x.x亿"
-	if digit > 99999999 {
-		return fmt.Sprintf("%.1f亿", float64(digit)/100000000)
-	} else if digit > 99999 {
-		return fmt.Sprintf("%.1f万", float64(digit)/10000)
-	}
-	return fmt.Sprintf("%d", digit)
 }
